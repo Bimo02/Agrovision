@@ -1,0 +1,3 @@
+[submodule "MobileApp/AgroVisionApp"]
+	path = MobileApp/AgroVisionApp
+	url = https://github.com/hamdyhaggag/AgroVision.git

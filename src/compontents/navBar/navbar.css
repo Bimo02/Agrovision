@@ -1,0 +1,476 @@
+
+/* Navbar.css */
+
+/* تفعيل دعم الـ RTL عند اختيار اللغة العربية */
+
+
+
+body[dir="rtl"] .navbar-left {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; 
+}
+
+body[dir="rtl"] .navbar-right {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: flex-start; 
+}
+/* إذا كانت اللغة من اليمين لليسار (مثل العربية) */
+[dir="rtl"] .notifications-dropdown {
+  right: auto;
+  left: 0;
+  /* أو أي تنسيقات أخرى تحتاجها */
+}
+
+
+
+[dir="rtl"] .unread-dot {
+  margin-left: 0;
+  margin-right: 8px;
+}
+/* التأكد من التنسيق الصحيح للـ Input في كلا اللغتين */
+.search-input {
+  margin-left: 0.5rem;
+  padding: 0.5rem;
+  border: none;
+  outline: none;
+  background-color: #F5F6FA;
+  border-radius: 15px;
+  padding-left: 30px;
+  text-align: left; /* ترتيب النصوص من اليسار لليمين عند اختيار اللغة الإنجليزية */
+}
+
+body[dir="rtl"] .search-input {
+  padding-right: 30px; /* تغيير padding للغة العربية */
+  text-align: right; /* ترتيب النصوص من اليمين لليسار */
+}
+
+/* عند استخدام اللغة العربية (RTL) للـ Placeholder */
+body[dir="rtl"] .search-input::placeholder {
+  font-family: "Syne", sans-serif;
+  color: #909090;
+  text-align: right; /* التأكد من أن الـ Placeholder يظهر من اليمين لليسار */
+}
+
+body[dir="rtl"] .dropdown-menu {
+  right: 10px;
+  left: unset; /* إزالة المحاذاة لليسار عند استخدام RTL */
+}
+
+body[dir="rtl"] .dropdown-backdrop {
+  right: 0; /* التأكد من أن الخلفية تغطي الـ Dropdown بشكل صحيح في RTL */
+  left: unset; /* إزالة المحاذاة لليسار */
+}
+
+/* التأكد من تنسيق الأيقونات بشكل مناسب مع RTL */
+body[dir="rtl"] .icon {
+  transform: rotate(180deg); /* تدوير الأيقونات عند التبديل إلى العربية */
+}
+
+body[dir="rtl"] .inputs .search-ico {
+  position: absolute;
+  z-index: 5;
+  margin-right: 19px; /* تغيير اتجاه الأيقونة في RTL */
+  margin-left: unset; /* إزالة المسافة من اليسار عند استخدام RTL */
+}
+
+/* إضافة بعض التنسيق لتحسين التبديل بين اللغتين */
+
+
+body[dir="rtl"] .navbar {
+  left: 0;
+    transition: left 0.3s ease, right 0.3s ease;
+  }
+
+
+
+/* تحسين التنسيق في شاشة صغيرة */
+@media (max-width: 768px) {
+  body[dir="rtl"] .navBar {
+    left: 0;
+  }
+  .language-selector{
+    display: none;
+
+  }
+}
+
+
+/* Navbar.css */
+.navBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: #fff;
+  position: fixed;
+  top: 0;
+  left: 200px; /* ترك مساحة للـ Sidebar */
+  right: 0; /* اجعلها تمتد على العرض الكامل */
+  z-index: 10; /* لتظهر فوق السايدبار */
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  margin-left: 0.5rem;
+  padding: 0.5rem;
+  border: none;
+  outline: none;
+  background-color: #F5F6FA;
+  border-radius: 15px;
+  padding-left: 30px;
+}
+.search-input::placeholder{
+  font-family: "Syne", sans-serif;
+  color: #909090;
+}
+
+.navbar-right {
+
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.icon {
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.inputs {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.inputs .search-ico {
+  position: absolute;
+  z-index: 5;
+  margin-left: 19px;
+  color: #909090;
+}
+
+/* عند التصغير ليأخذ الـ Navbar كامل العرض */
+
+input{
+  font-size: revert !important;
+}
+
+/* Navbar styles */
+.navBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  background-color: #fff;
+  position: fixed;
+  top: 0;
+  left: 235px; /* إذا كان السايدبار مفتوحًا */
+  right: 0;
+  z-index: 10; /* فوق السايدبار */
+  transition: left 0.3s ease;
+}
+
+.accc{
+    width: 48px;
+    border-radius: 50%;
+}
+/* بالنسبة للأجهزة الصغيرة */
+/* @media (max-width: 768px) {
+  .navBar {
+    /* width: 100%; لملء عرض الصفحة بالكامل 
+  }
+} */
+
+.logout-icon {
+  font-size: 20px;
+  cursor: pointer !important;
+  margin-left: 10px;
+  transition: color 0.3s ease;
+}
+
+
+.dropdown-menu {
+  position: absolute;
+  top: 50px; /* أو أي قيمة تناسب مكان الـ dropdown */
+  right: 0;
+  background: rgba(255, 255, 255, 0.67) !important; /* الشفافية */
+  backdrop-filter: blur(10px); /* تأثير الضبابية */
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important; /* الظلال */
+  min-width: 200px;
+  z-index: 1000; /* تأكد من أن القائمة تظهر فوق العناصر الأخرى */
+}
+
+
+.dropdown-menu {
+  display: block !important; /* تأكدي إنه ظاهر */
+  position: absolute; /* للتأكد من تحديد مكانه */
+  top: 60px; /* نزليه تحت الصورة */
+  right: 10px;
+  /* background-color: rgba(255, 255, 255, 0.67) !important; */
+  border: 0px ;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  width: 200px;
+  z-index: 1000; /* للتأكد إنه فوق كل العناصر */
+  padding: 10px !important;
+}
+
+
+.dropdown-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2) !important; /* لون شفاف */
+  backdrop-filter: blur(5px); /* تأثير الـ blur */
+  z-index: 999; /* يجب أن يكون أسفل الـ dropdown */
+}
+
+
+
+
+.dropdown-menu p, .dropdown-menu div {
+  margin: 10px 0;
+  font-weight: 500;
+}
+
+.language div {
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+nav.expanded {
+  left: 0;
+}
+/* .language .active-language {
+  font-weight: bold;
+  color: rgba(0, 0, 0, 1);
+} */
+
+
+
+
+.language-selector {
+  padding: 9px 5px 9px 10px;  display: flex;
+  gap: 8px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  border: 0.6px solid rgba(240, 240, 240, 1);
+  border-radius: 30px;
+}
+
+.lang-flag {
+  width: 20px;
+  height: 19px;
+  border-radius: 50%;
+}
+
+.language-menu {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  overflow: hidden;
+  z-index: 100;
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.language-option:hover {
+  background: #f0f0f0;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background: white;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 10px;
+  z-index: 100;
+  min-width: 150px;
+}
+
+
+
+.dropdown-arrow {
+  font-size: 15px;
+  color: rgba(196, 196, 196, 1);
+}
+
+
+.profile-pic{
+  width:40px;
+  height: 40px;
+  border-radius: 10px;
+}
+.profile-name{
+  font-size: 11px;
+  font-weight: 700;
+}
+.profile-role{
+  font-size: 9.5px;
+  color: rgba(143, 143, 143, 1);
+}
+.profile-selector{
+  padding: 0px 5px;
+}
+@media (max-width: 768px) {
+  .navbar {
+    left: 0; /* عندما يكون السايدبار مخفي، الـ Navbar سيأخذ عرض كامل الصفحة */
+  }
+  .inputs{
+    display: none;
+  }
+  .language-selector{
+    display: none;
+  }
+}
+
+/* أنماط الإشعارات */
+.notification-icon-container {
+  position: relative;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
+.notification-icon {
+  font-size: 24px;
+  color: #333;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: #ff4757;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.notifications-dropdown {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  width: 350px;
+  max-height: 500px;
+  overflow-y: auto;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+}
+
+.notifications-header {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notifications-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.notifications-header span {
+  font-size: 12px;
+  color: #666;
+}
+
+.notifications-list {
+  padding: 0;
+}
+
+.notification-item {
+  padding: 12px 15px;
+  border-bottom: 1px solid #f5f5f5;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  transition: background-color 0.2s;
+}
+
+.notification-item:hover {
+  background-color: #f9f9f9;
+}
+
+.notification-item.unread {
+  background-color: #f8f9fa;
+}
+
+.notification-content {
+  flex: 1;
+  direction: rtl;
+}
+
+.notification-content h4 {
+  margin: 0 0 5px 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.notification-content p {
+  margin: 0 0 5px 0;
+  font-size: 13px;
+  color: #555;
+}
+
+.notification-content small {
+  font-size: 11px;
+  color: #999;
+}
+
+.unread-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #ff4757;
+  border-radius: 50%;
+  align-self: center;
+}
+
+.no-notifications {
+  padding: 20px;
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+}
+
+nav.expanded{
+      right: 0px !important;
+}

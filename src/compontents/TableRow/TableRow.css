@@ -1,0 +1,73 @@
+.inventory-table {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  color: black;
+
+  height: 90vh;
+}
+
+.inventory-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.inventory-table th {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 2px solid #eee;
+}
+.inventory-table td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.product-image {
+  width: 80px; /* تحديد عرض الصورة */
+  height: 80px; /* تحديد ارتفاع الصورة */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.product-img {
+  width: 100%;
+  height: auto;
+  border-radius: 5px; /* جعل الصورة مستديرة قليلاً */
+}
+
+.in-stock {
+  color: green;
+  font-weight: bold;
+}
+
+.out-of-stock {
+  color: red;
+  font-weight: bold;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.edit-button,
+.delete-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.3s;
+}
+
+.edit-button:hover,
+.delete-button:hover {
+  color: #007bff; /* تغيير اللون عند التمرير فوق الأزرار */
+}
+
+.edit-button:focus,
+.delete-button:focus {
+  outline: none; /* إزالة الخطوط المحيطة عند التركيز على الأزرار */
+}

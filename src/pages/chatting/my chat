@@ -1,0 +1,2825 @@
+
+// import { useState, useEffect, useRef } from "react";
+// import Sidebar from "../../compontents/sidebar/sidebar";
+// import Navbar from "../../compontents/navBar/navbar";
+// import { HiOutlineDotsHorizontal } from "react-icons/hi";
+// import { LiaSearchSolid } from "react-icons/lia";
+// import { IoPeople } from "react-icons/io5";
+// import { FaStar } from "react-icons/fa6";
+// import { IoMdInformationCircleOutline } from "react-icons/io";
+// import { Paperclip } from "react-bootstrap-icons";
+// import EmojiPicker from "emoji-picker-react";
+// import { FaUnderline } from "react-icons/fa";
+// import { PiTextItalicBold } from "react-icons/pi";
+// import { FaBold } from "react-icons/fa6";
+// import { IoIosUndo } from "react-icons/io";
+// import { IoIosRedo } from "react-icons/io";
+// import { LuType } from "react-icons/lu";
+// import { BsEmojiSmileFill } from "react-icons/bs";
+// import { RiSendPlaneFill } from "react-icons/ri";
+// import { FaFile } from "react-icons/fa6";
+// import { FaMicrophone, FaPlay } from "react-icons/fa";
+// import { FaStop} from "react-icons/fa";
+// import { FaPause } from "react-icons/fa6";
+// import { FaCircle } from "react-icons/fa"; // لأيقونات الدوائر
+// import { useLocation } from "react-router-dom"; // أضف هذا الاستيراد
+
+// import MetaAIHeader from "./chatbot"
+// import { TbXboxXFilled } from "react-icons/tb";
+// import { Howl } from 'howler';
+// import "./new_chat.css"
+
+// const formatMessage = (message) => {
+//     if (!message) return "";
+//     return message
+//         .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+//         .replace(/\*\s/g, "<br/>• ");
+// };
+
+// const TypingMessage = ({ text }) => { // احذف onComplete من الخصائص
+//     const [displayedText, setDisplayedText] = useState('');
+//     const [currentIndex, setCurrentIndex] = useState(0);
+  
+//     useEffect(() => {
+//       if (!text || currentIndex >= text.length) return; // احذف استدعاء onComplete
+  
+//       const typingSpeed = 10;
+//       const timer = setTimeout(() => {
+//         setDisplayedText(prev => prev + text[currentIndex]);
+//         setCurrentIndex(prev => prev + 1);
+//       }, typingSpeed);
+  
+//       return () => clearTimeout(timer);
+//     }, [currentIndex, text]); // احذف onComplete من dependencies
+  
+//     return <span dangerouslySetInnerHTML={{ __html: formatMessage(displayedText) }} />;
+//   };
+
+// function Chat() {
+//     const location = useLocation(); // أضف هذا السطر
+//     const [isRecording, setIsRecording] = useState(false); // حالة التسجيل
+//     const [audioURL, setAudioURL] = useState(null); // رابط ملف الصوت المسجل
+//     const mediaRecorderRef = useRef(null);
+//     const audioChunksRef = useRef([]);
+//     const [undoStack, setUndoStack] = useState([]);
+//     const [redoStack, setRedoStack] = useState([]);
+//     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+//     const [fontIndex, setFontIndex] = useState(0);
+//     const fonts = ["Arial", "Times New Roman", "Courier New", "Georgia", "Verdana"];
+//     const [isChatbotActive, setIsChatbotActive] = useState(false);
+//     const [setEmojiPickerPosition] = useState({ top: 0, left: 0 });
+//     const emojiButtonRef = useRef(null);
+//     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+//     const editorRef = useRef(null);
+//     const [files, setFiles] = useState([]);
+//     const [messages, setMessages] = useState([]);
+//     const [loading, setLoading] = useState(false);
+//     const [audioLoading, setAudioLoading] = useState(false);
+//     const [normalMessages, setNormalMessages] = useState([]); // للشات العادي
+//     const [metaMessages, setMetaMessages] = useState([]); // لشات الميتا
+//     const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+//     const [chatHistory, setChatHistory] = useState([]); // استبدل metaMessages و messages
+//     const [currentPlayingId, setCurrentPlayingId] = useState(null); // لتتبع أي رسالة يتم تشغيلها حالياً
+//     const [currentAudioPosition, setCurrentAudioPosition] = useState(0); // إضافة هذه السطر
+//     const [audioPositions, setAudioPositions] = useState({}); // تخزين موضع التشغيل لكل رسالة
+//     const [waitingForBot, setWaitingForBot] = useState(false);
+//     const messagesEndRef = useRef(null); // أضف هذا السطر
+//     const [sidebarSearchQuery, setSidebarSearchQuery] = useState('');
+//     const [filteredSidebarMessages, setFilteredSidebarMessages] = useState([]);
+//     const soundRef = useRef(null);
+//     const [imageBase64, setImageBase64] = useState("");
+//     const [copiedMessageId, setCopiedMessageId] = useState(null);
+
+//     const resetChatbot = () => {
+//         // مسح جميع الرسائل بما فيها رسائل النظام
+//         setChatHistory([]);
+//         setMetaMessages([]);
+//         setFiles([]);
+//         setAudioURL(null);
+//         setLoading(false);
+//         setWaitingForBot(false);
+        
+//         // إيقاف أي صوت مشغل
+//         Howler.stop();
+//         setCurrentPlayingId(null);
+//         setAudioPositions({});
+        
+//         // مسح محتوى المحرر
+//         if (editorRef.current) {
+//           editorRef.current.innerHTML = '';
+//         }
+        
+//         // تفعيل وضع الميتا شات
+//         setIsChatbotActive(true);
+//       };
+      
+//     const handleSidebarSearch = (query) => {
+//         setSidebarSearchQuery(query);
+        
+//         if (!query.trim()) {
+//           setFilteredSidebarMessages([]);
+//           return;
+//         }
+      
+//         // البيانات الثابتة التي تظهر في الجانب الأيسر (يمكن استبدالها ببياناتك الفعلية)
+//         const sidebarMessages = [
+//           { name: "Margaretha", description: "I remember that project due is tomorrow." },
+//           { name: "Kleon Full Team", description: "Chloe Simatupang typing..." },
+//           { name: "Marissa Joana", description: "Lorem ipsum dolor sit amet consectetur adipive" },
+//           { name: "Juminten", description: "Lorem ipsum dolor sit amet consectetur adipive" },
+//           { name: "Richard Hunters", description: "Lorem ipsum dolor sit amet consectetur adipive" }
+//         ];
+      
+//         const results = sidebarMessages.filter(item => 
+//           item.name.toLowerCase().includes(query.toLowerCase()) || 
+//           item.description.toLowerCase().includes(query.toLowerCase())
+//         );
+      
+//         setFilteredSidebarMessages(results);
+//       };
+
+//     const scrollToBottom = () => {
+//         if (chatContainerRef.current) {
+//           chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+//         }
+//       };
+
+
+//     const saveState = () => {
+//         if (editorRef.current) {
+//             setUndoStack((prev) => [...prev, editorRef.current.innerHTML]);
+//             setRedoStack([]);
+//         }
+//     };
+
+
+    
+// const convertToWav = async (blob) => {
+//     try {
+//         const arrayBuffer = await blob.arrayBuffer();
+//         const audioContext = new (window.AudioContext || window.webkitAudioContext)({
+//             sampleRate: 16000
+//         });
+
+//         const audioData = await audioContext.decodeAudioData(arrayBuffer);
+//         const wavBuffer = encodeWAV(audioData.getChannelData(0), 16000);
+//         return new Blob([wavBuffer], { type: 'audio/wav' });
+//     } catch (error) {
+//         console.error("Error converting to WAV:", error);
+//         throw error;
+//     }
+// };
+
+// const TypingIndicator = () => {
+//     return (
+//         <div className="typing-indicator bot-message">
+//             <div className="message-content bot">
+//                 <div style={{
+//                     display: 'flex',
+//                     alignItems: 'center',
+//                     gap: '4px',
+//                     padding: '8px 12px'
+//                 }}>
+//                     <div style={{
+//                         width: '12px',
+//                         height: '12px',
+//                         borderRadius: '50%',
+//                         backgroundColor: '#666',
+//                         animation: 'pulse 1.5s infinite ease-in-out'
+//                     }} />
+//                 </div>
+//             </div>
+//         </div>
+//     );
+// };
+// // دالة مساعدة لكتابة النصوص في الرأس
+// const writeString = (view, offset, string) => {
+//     for (let i = 0; i < string.length; i++) {
+//         view.setUint8(offset + i, string.charCodeAt(i));
+//     }
+// };
+
+// const startRecording = async () => {
+//     setIsRecording(true);
+//     audioChunksRef.current = [];
+
+//     try {
+//         const stream = await navigator.mediaDevices.getUserMedia({
+//             audio: {
+//                 sampleRate: 16000,
+//                 channelCount: 1,
+//                 echoCancellation: true,
+//                 noiseSuppression: true,
+//                 autoGainControl: true
+//             }
+//         });
+
+//         const options = {
+//             mimeType: 'audio/webm;codecs=opus',
+//             audioBitsPerSecond: 16000
+//         };
+
+//         const mediaRecorder = new MediaRecorder(stream, options);
+
+//         // إعداد معالج البيانات المتاحة
+//         mediaRecorder.ondataavailable = (event) => {
+//             if (event.data.size > 0) {
+//                 audioChunksRef.current.push(event.data);
+//             }
+//         };
+
+//         // إعداد معالج التوقف
+//         mediaRecorder.onstop = async () => {
+//             try {
+//                 const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+//                 const wavBlob = await convertToWav(audioBlob);
+//                 const url = URL.createObjectURL(wavBlob);
+//                 setAudioURL(url);
+                
+//                 // إيقاف جميع المسارات الصوتية
+//                 stream.getTracks().forEach(track => track.stop());
+//             } catch (error) {
+//                 console.error("Error processing recording:", error);
+//             } finally {
+//                 setIsRecording(false);
+//             }
+//         };
+
+//         mediaRecorderRef.current = mediaRecorder;
+//         mediaRecorder.start(100); // جمع البيانات كل 100 مللي ثانية
+//     } catch (error) {
+//         console.error("Error starting recording:", error);
+//         setIsRecording(false);
+//     }
+// };
+    
+// const verifyAudioQuality = async (blob) => {
+//     try {
+//         const arrayBuffer = await blob.arrayBuffer();
+//         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+//         const audioData = await audioContext.decodeAudioData(arrayBuffer);
+        
+//         const channelData = audioData.getChannelData(0);
+//         let isSilent = true;
+//         let maxAmplitude = 0;
+        
+//         for (let i = 0; i < channelData.length; i++) {
+//             const amplitude = Math.abs(channelData[i]);
+//             if (amplitude > 0.01) {
+//                 isSilent = false;
+//                 maxAmplitude = Math.max(maxAmplitude, amplitude);
+//             }
+//         }
+        
+//         if (isSilent) {
+//             throw new Error("No audio detected (silent recording)");
+//         }
+        
+//         if (maxAmplitude < 0.1) {
+//             throw new Error("Audio volume is too low");
+//         }
+        
+//         console.log("Audio quality check passed", {
+//             duration: audioData.duration.toFixed(2) + "s",
+//             sampleRate: audioData.sampleRate,
+//             maxAmplitude: (maxAmplitude * 100).toFixed(2) + "%"
+//         });
+        
+//         return true;
+//     } catch (error) {
+//         console.error("Audio verification failed:", error);
+//         throw new Error("Audio quality issue: " + error.message);
+//     }
+// };
+
+// const encodeWAV = (audioData, sampleRate = 16000) => {
+//     const numChannels = 1;
+//     const bytesPerSample = 2;
+//     const blockAlign = numChannels * bytesPerSample;
+//     const byteRate = sampleRate * blockAlign;
+    
+//     const buffer = new ArrayBuffer(44 + audioData.length * bytesPerSample);
+//     const view = new DataView(buffer);
+
+//     // كتابة رأس WAV
+//     writeString(view, 0, 'RIFF');
+//     view.setUint32(4, 36 + audioData.length * bytesPerSample, true);
+//     writeString(view, 8, 'WAVE');
+//     writeString(view, 12, 'fmt ');
+//     view.setUint32(16, 16, true);
+//     view.setUint16(20, 1, true); // PCM format
+//     view.setUint16(22, numChannels, true);
+//     view.setUint32(24, sampleRate, true);
+//     view.setUint32(28, byteRate, true);
+//     view.setUint16(32, blockAlign, true);
+//     view.setUint16(34, bytesPerSample * 8, true); // bits per sample
+//     writeString(view, 36, 'data');
+//     view.setUint32(40, audioData.length * bytesPerSample, true);
+
+//     // كتابة بيانات الصوت
+//     let offset = 44;
+//     for (let i = 0; i < audioData.length; i++) {
+//         const sample = Math.max(-1, Math.min(1, audioData[i]));
+//         view.setInt16(offset, sample * 0x7FFF, true);
+//         offset += 2;
+//     }
+
+//     return buffer;
+// };
+
+
+//     const stopRecording = () => {
+//         if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+//             mediaRecorderRef.current.stop();
+//         }
+//     };
+
+
+//     // play Audio
+//     const playAudio = () => {
+//         if (audioURL) {
+//             const audio = new Audio(audioURL);
+//             audio.play();
+//         }
+//     };
+
+
+
+    
+//     // دالة مساعدة لإزالة الوسوم HTML
+//     const stripHtml = (html) => {
+//         return html.replace(/<[^>]*>/g, '');
+//     };
+//     const ChatMessage = ({ text }) => {
+//         return (
+//             <p dangerouslySetInnerHTML={{ __html: formatMessage(text) }} />
+//         );
+//     };
+    
+
+//     //  (Undo)
+//     const undo = () => {
+//         if (undoStack.length > 0) {
+//             const lastState = undoStack.pop();
+//             setRedoStack((prev) => [editorRef.current.innerHTML, ...prev]); // حفظ الحالة الحالية قبل الرجوع
+//             editorRef.current.innerHTML = lastState;
+//             setUndoStack([...undoStack]); // تحديث الـ Stack
+//         }
+//     };
+
+//     //  (Redo)
+//     const redo = () => {
+//         if (redoStack.length > 0) {
+//             const nextState = redoStack.shift();
+//             setUndoStack((prev) => [...prev, editorRef.current.innerHTML]); // حفظ الحالة الحالية قبل التعديل
+//             editorRef.current.innerHTML = nextState;
+//             setRedoStack([...redoStack]); // تحديث الـ Stack
+//         }
+//     };
+
+//     // change font
+//     const toggleFont = () => {
+//         const newIndex = (fontIndex + 1) % fonts.length;
+//         setFontIndex(newIndex);
+//         document.execCommand("fontName", false, fonts[newIndex]);
+//     };
+
+//     // sidebar & resize
+//     const toggleSidebar = () => {
+//         setIsSidebarOpen(!isSidebarOpen);
+//     };
+//     useEffect(() => {
+//         const handleResize = () => {
+//             if (window.innerWidth <= 1120) {
+//                 setIsSidebarOpen(false);
+//             } else {
+//                 setIsSidebarOpen(true);
+//             }
+//         };
+
+//         handleResize();
+
+//         window.addEventListener("resize", handleResize);
+//         return () => window.removeEventListener("resize", handleResize);
+//     }, []);
+  
+
+
+//     // format text
+//     const formatText = (command) => {
+//         document.execCommand(command, false, null);
+//     };
+
+//     // emoji
+//     const addEmoji = (emojiObject) => {
+//         const editor = editorRef.current;
+//         if (!editor) return;
+
+//         // إضافة الإيموجي في نهاية النص
+//         editor.innerHTML += emojiObject.emoji;
+
+//         // إخفاء الـ Emoji Picker بعد الاختيار
+//         setShowEmojiPicker(false);
+//     };
+//     const toggleEmojiPicker = () => {
+//         if (emojiButtonRef.current) {
+//             const rect = emojiButtonRef.current.getBoundingClientRect();
+//             setEmojiPickerPosition({
+//                 top: rect.top - 250, // يطلع فوق الزر
+//                 left: rect.left,
+//             });
+//         }
+//         setShowEmojiPicker(!showEmojiPicker);
+//     };
+
+//     //files
+//     const handleFileChange = (event) => {
+//         const file = event.target.files[0];
+    
+//         if (file) {
+//             // قراءة الصورة وتحويلها إلى Base64
+//             const reader = new FileReader();
+//             reader.readAsDataURL(file);
+//             reader.onloadend = () => {
+//                 setImageBase64(reader.result); // حفظ Base64
+    
+//                 // تحديث قائمة الملفات المرفوعة
+//                 setFiles((prevFiles) => [...prevFiles, file]); 
+    
+//                 console.log("Selected file:", file.name);
+//             };
+//         }
+//     };
+    
+//     useEffect(() => {
+//         if (chatContainerRef.current && !waitingForBot) {
+//           chatContainerRef.current.scrollTo({
+//             top: chatContainerRef.current.scrollHeight,
+//             behavior: "smooth"
+//           });
+//         }
+//       }, [chatHistory]);
+    
+//     const removeFile = (fileIndex) => {
+//         setFiles((prev) => prev.filter((_, index) => index !== fileIndex));
+//     };
+
+//     const isSupportedAudioType = (type) => {
+//         const audio = document.createElement('audio');
+//         return type.startsWith('audio/') && audio.canPlayType(type) !== '';
+//       };
+
+//     const [currentPlayingAudio, setCurrentPlayingAudio] = useState(null);
+//     async function playAudioSafe(audioUrl) {
+//         const audio = new Audio();
+        
+//         // 1. إعداد CORS مهم جداً
+//         audio.crossOrigin = "anonymous";
+        
+//         // 2. إضافة مصادر بديلة (fallback)
+//         const source = document.createElement('source');
+//         source.src = audioUrl;
+        
+//         // 3. تحديد نوع الملف بشكل صريح
+//         const extension = audioUrl.split('.').pop().toLowerCase();
+//         source.type = 
+//           extension === 'mp3' ? 'audio/mpeg' :
+//           extension === 'wav' ? 'audio/wav' :
+//           extension === 'ogg' ? 'audio/ogg' : 'audio/*';
+        
+//         audio.appendChild(source);
+        
+//         try {
+//           await audio.play();
+//           return audio;
+//         } catch (error) {
+//           console.error("فشل التشغيل المباشر:", error);
+          
+//           // 4. حل بديل إذا فشل التشغيل العادي
+//           const response = await fetch(audioUrl, {
+//             headers: { 'Accept': 'audio/mpeg, audio/wav' }
+//           });
+          
+//           const blob = await response.blob();
+//           const blobUrl = URL.createObjectURL(blob);
+//           audio.src = blobUrl;
+          
+//           await audio.play();
+//           return audio;
+//         }
+//       }
+
+//       const playWithHowler = (audioUrl) => {
+//         const sound = new Howl({
+//           src: [audioUrl],
+//           html5: true, // لتفادي مشاكل CORS
+//           format: ['mp3', 'wav'],
+//           onplayerror: function() {
+//             sound.once('unlock', function() {
+//               sound.play();
+//             });
+//           }
+//         });
+//         sound.play();
+//       };
+
+
+//       // هذا التأثير سيتم تنفيذه مرة واحدة عند تحميل المكون
+//       useEffect(() => {
+//         // تحقق مما إذا كان التوجيه جاء من الأيقونة المختصرة
+//         if (location.state?.shouldActivateMeta) {
+//           setIsChatbotActive(true);
+          
+//           // إعادة تعيين حالة الدردشة
+//           setChatHistory([]);
+//           setMetaMessages([]);
+//           setFiles([]);
+//           setAudioURL(null);
+          
+//           // إذا كان لديك أي إعدادات أولية أخرى للميتا شات
+//           initializeMetaChat();
+//         }
+//       }, [location.state]);
+    
+//       const initializeMetaChat = () => {
+//         // أي إعدادات إضافية تحتاجها لبدء الميتا شات
+//         console.log("Meta chat activated from shortcut");
+//       };
+
+//       useEffect(() => {
+//         return () => {
+//           Howler.stop();
+//         };
+//       }, []);
+
+
+    //   const playBotAudio = (audioPath, messageId) => {
+    //     console.log('Attempting to play audio:', audioPath);
+        
+    //     if (!audioPath) {
+    //       console.error('No audio path provided');
+    //       return;
+    //     }
+      
+    //     // إذا كان نفس الصوت مشغل بالفعل - إيقاف مؤقت
+    //     if (currentPlayingId === messageId && isAudioPlaying) {
+    //       if (soundRef.current) {
+    //         soundRef.current.pause();
+    //         setAudioPositions(prev => ({
+    //           ...prev,
+    //           [messageId]: soundRef.current.seek()
+    //         }));
+    //         setIsAudioPlaying(false);
+    //       }
+    //       return;
+    //     }
+      
+    //     // إذا كان نفس الصوت متوقف مؤقتًا - استئناف التشغيل
+    //     if (currentPlayingId === messageId && !isAudioPlaying) {
+    //       if (soundRef.current) {
+    //         soundRef.current.play();
+    //         soundRef.current.seek(audioPositions[messageId] || 0);
+    //         setIsAudioPlaying(true);
+    //       }
+    //       return;
+    //     }
+      
+    //     // إيقاف أي صوت آخر مشغل
+    //     Howler.stop();
+      
+    //     soundRef.current = new Howl({
+    //       src: [audioPath],
+    //       html5: true,
+    //       format: ['mp3', 'wav'],
+    //       onplay: () => {
+    //         console.log('Playback started');
+    //         setIsAudioPlaying(true);
+    //         setCurrentPlayingId(messageId);
+            
+    //         // إذا كان هناك موضع محفوظ، نبدأ منه
+    //         if (audioPositions[messageId]) {
+    //           soundRef.current.seek(audioPositions[messageId]);
+    //         }
+    //       },
+    //       onpause: () => {
+    //         setAudioPositions(prev => ({
+    //           ...prev,
+    //           [messageId]: soundRef.current.seek()
+    //         }));
+    //       },
+    //       onend: () => {
+    //         setIsAudioPlaying(false);
+    //         setCurrentPlayingId(null);
+    //         setAudioPositions(prev => ({ ...prev, [messageId]: 0 }));
+    //       },
+    //       onstop: () => {
+    //         setAudioPositions(prev => ({ ...prev, [messageId]: 0 }));
+    //       }
+    //     });
+      
+    //     // تحديث الموضع كل ثانية
+    //     const updateInterval = setInterval(() => {
+    //       if (soundRef.current && soundRef.current.playing()) {
+    //         setAudioPositions(prev => ({
+    //           ...prev,
+    //           [messageId]: soundRef.current.seek()
+    //         }));
+    //       } else {
+    //         clearInterval(updateInterval);
+    //       }
+    //     }, 1000);
+      
+    //     soundRef.current.play();
+    //   };
+    // // الحل البديل للـ streaming باستخدام Audio API العادي
+    // const fallbackAudioStreaming = (audioUrl) => {
+    //     try {
+    //         const audio = new Audio(audioUrl);
+    //         audio.preload = 'none'; // لا تحمل الصوت مسبقاً
+            
+    //         audio.oncanplaythrough = () => {
+    //             console.log('Fallback audio ready for streaming');
+    //         };
+            
+    //         audio.onerror = (e) => {
+    //             console.error('Fallback audio error:', e);
+    //         };
+            
+    //         const playPromise = audio.play();
+            
+    //         if (playPromise !== undefined) {
+    //             playPromise.then(() => {
+    //                 setCurrentPlayingAudio(audio);
+    //                 return true;
+    //             }).catch(error => {
+    //                 console.error('Fallback play failed:', error);
+    //                 return false;
+    //             });
+    //         }
+            
+    //         return true;
+    //     } catch (error) {
+    //         console.error('All streaming methods failed:', error);
+    //         return false;
+    //     }
+    // };
+
+//     const isArabic = (text) => {
+//         // Regular expression to match Arabic characters
+//         const arabicRegex = /[\u0600-\u06FF]/;
+//         return arabicRegex.test(text);
+//       };
+
+
+//       const copyToClipboard = (text, messageId) => {
+//         navigator.clipboard.writeText(text)
+//           .then(() => {
+//             console.log('Text copied to clipboard');
+//             setCopiedMessageId(messageId); // تعيين الرسالة التي تم نسخها
+            
+//             // إعادة النص إلى "Copy" بعد 3 ثوانٍ
+//             setTimeout(() => {
+//               setCopiedMessageId(null);
+//             }, 1000);
+//           })
+//           .catch(err => {
+//             console.error('Failed to copy text: ', err);
+//           });
+//       };
+
+
+//     const sendMessage = async () => {
+//         const messageText = editorRef.current.innerHTML.trim();
+//         if (loading) return;
+    
+//         if (!messageText && files.length === 0 && !audioURL) return;
+    
+//         const newMessage = {
+//             id: Date.now(), // إضافة معرّف فريد
+//             name: "You",
+//             date: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+//             description: messageText,
+//             attachments: files,
+//             audio: audioURL || null,
+//                isUser: true // علامة أن هذه الرسالة من المستخدم
+//     };
+
+//     // أضف رسالة المستخدم أولاً
+//     setChatHistory(prev => [...prev, newMessage]);
+    
+//     editorRef.current.innerHTML = "";
+//     setFiles([]);
+//     setAudioURL(null);
+
+//         if (isChatbotActive) {
+//             // حالة الميتا شات
+//             setLoading(true);
+//             setWaitingForBot(true); // <-- هنا نحدد أننا ننتظر الرد
+
+//             setMetaMessages([...metaMessages, newMessage]);
+            
+
+//         try {
+//             let responsePayload;
+//             let response;
+    
+//             if (audioURL) {
+//                 const audioBlob = await fetch(audioURL).then(r => r.blob());
+                
+//                 // التحقق من حجم الصوت
+//                 if (audioBlob.size < 1024) {
+//                     throw new Error("Audio recording is too short");
+//                 }
+    
+//                 // التحقق من جودة الصوت
+//                 await verifyAudioQuality(audioBlob);
+    
+//                 const formData = new FormData();
+//                 formData.append("audio_file", audioBlob, "recording.wav");
+//                 formData.append("sample_rate", "16000");
+//                 formData.append("language", "auto"); // تحديد اللغة العربية
+//                 formData.append("speak", "true");
+                
+//                 response = await fetch("https://bbe2-197-48-37-106.ngrok-free.app/voice_convo", {
+//                     method: "POST",
+//                     body: formData,
+//                     headers: {
+//                         "Accept": "application/json",
+//                     }
+//                 });
+//             }
+//             else if (files.length > 0) {
+//                 const formData = new FormData();
+//                 formData.append("image_file", files[0]);
+//                 formData.append("mode", "text");
+//                 formData.append("question", messageText || "Describe this image.");
+//                 formData.append("speak", "false");
+    
+//                 response = await fetch("https://bbe2-197-48-37-106.ngrok-free.app/image_convo", {
+//                     method: "POST",
+//                     body: formData,
+//                 });
+//             } else {
+//                 const payload = {
+//                     query: messageText,
+//                     speak_response: false,
+//                 };
+    
+//                 response = await fetch("https://bbe2-197-48-37-106.ngrok-free.app/text_convo", {
+//                     method: "POST",
+//                     headers: {
+//                         "Content-Type": "application/json",
+//                     },
+//                     body: JSON.stringify(payload),
+//                 });
+//             }
+    
+//             // تحقق من حالة الاستجابة
+//             if (!response.ok) {
+//                 const errorText = await response.text();
+//                 console.error("API Error Response:", errorText);
+//                 throw new Error(`API request failed with status ${response.status}`);
+//             }
+    
+//             responsePayload = await response.json();
+//     console.log("API Response:", responsePayload);
+//     const responseText = responsePayload.Answer || responsePayload.answer || responsePayload.text || "No response";
+
+
+//     const botMessage = {
+//         id: Date.now(),
+//         name: "Khedr",
+//         date: "Copy",
+//         rawText: responseText || "No response",
+//         description: formatMessage(responseText || "No response"),
+//         audioPath: responsePayload.audio_url 
+//           ? responsePayload.audio_url.startsWith('http') 
+//             ? responsePayload.audio_url 
+//             : `https://bbe2-197-48-37-106.ngrok-free.app${responsePayload.audio_url}`
+//           : null,
+//         isUser: false
+//       };
+      
+//       setChatHistory(prev => [...prev, botMessage]);
+      
+//     }
+//        catch (error) {
+//     console.error("Error sending message:", error);
+//     const errorMessage = {
+//       id: Date.now(),
+//       name: "System",
+//       date: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+//       description: `Error: ${error.message}`,
+//       isUser: false
+//     };
+//     setChatHistory(prev => [...prev, errorMessage]);
+//   } finally {
+//             setLoading(false);
+//             setWaitingForBot(false); // <-- نهاية الانتظار
+//             editorRef.current.innerHTML = "";
+//             setFiles([]);
+//             setAudioURL(null);
+
+//         }
+//     } else {
+//         // حالة الشات العادي
+//         setNormalMessages([...normalMessages, newMessage]);
+//     }
+//     };
+    
+//     useEffect(() => {
+//         const timer = setTimeout(() => {
+//           if (chatContainerRef.current) {
+//             chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+//           }
+//         }, 100);
+        
+//         return () => clearTimeout(timer);
+//       }, [chatHistory]);
+    
+//     const chatContainerRef = useRef(null);
+
+    
+//     useEffect(() => {
+//   // تحقق مما إذا كان التوجيه جاء من الأيقونة المختصرة
+//   if (location.state?.activateMeta) {
+//     setIsChatbotActive(true);
+//     resetChatbot();
+//   }
+// }, [location.state]);
+
+
+//     return (
+// <div className={`app ${isChatbotActive ? 'is-chatbot-active' : ''}`}>
+//         <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+//             <div className="main-content">
+//                 <div className={`sidebar-container ${isSidebarOpen ? "open" : "closed"}`}>
+//                     <Sidebar />
+//                 </div>
+//                 <div className={`content flex-column ${isSidebarOpen ? "shifted" : ""}`}>
+//                     <div className="s-order s-setting s-chatting">
+//                         <div className="main-chatting">
+//                             <div className="all_messages">
+//                                 <div className="top-message">
+//                                     <div className="top_top">
+//                                         <p>RECENT MESSAGE</p>
+//                                         <HiOutlineDotsHorizontal className="dott" />
+//                                     </div>
+//                                     <div className="top_search">
+//                                         <input 
+//                                             type="text" 
+//                                             className="search-in" 
+//                                             placeholder="Search contacts..."
+//                                             value={sidebarSearchQuery}
+//                                             onChange={(e) => handleSidebarSearch(e.target.value)}
+//                                         />
+//                                         <LiaSearchSolid className="icon-sear" />
+//                                         </div>
+//                                         <div 
+//                                             className="meta" 
+//                                             onClick={() => {
+//                                                 resetChatbot(); // تفريغ المحادثات أولاً
+//                                                 setIsChatbotActive(true); // ثم تفعيل الميتا شات
+//                                             }}
+//                                             >
+//                                             <MetaAIHeader/>
+//                                             </div>
+//                                 </div>
+//                                 <div className="my-messages">
+//                                     <div >
+//                                     {(sidebarSearchQuery ? filteredSidebarMessages : [
+//     { name: "Margaretha", description: "I remember that project due is tomorrow." },
+//     { name: "Kleon Full Team", description: "Chloe Simatupang typing..." },
+//     { name: "Marissa Joana", description: "Lorem ipsum dolor sit amet consectetur adipive" },
+//     { name: "Juminten", description: "Lorem ipsum dolor sit amet consectetur adipive" },
+//     { name: "Richard Hunters", description: "Lorem ipsum dolor sit amet consectetur adipive" },
+  
+// ]).map((message, index) => (
+//     <div key={index} className="new-message" onClick={() => setIsChatbotActive(false)} style={{"cursor":"pointer"}} // إضافة هذا السطر
+// >
+//       <div className="leftMessage"></div>
+//       <div className="rightMessage">
+//         <p className="name">{message.name}</p>
+//         <p className="describe">{message.description}</p>
+//       </div>
+//     </div>
+//   ))}
+// </div>
+//                                     {/* <div className="new-message">
+//                                         <div className="leftMessage justify-content-center align-items-center " style={{ background: "rgba(128, 205, 106, 1)", display: "flex" }} ><IoPeople style={{ color: "#fff", fontSize: "22px" }} />
+//                                         </div>
+//                                         <div className="rightMessage">
+//                                             <p className="name">Fathers Club</p>
+//                                             <p className="describe">Lorem ipsum dolor sit amet consectetur adipive</p>
+//                                         </div>
+//                                     </div>
+//                                     <div className="new-message">
+//                                         <div className="leftMessage justify-content-center align-items-center " style={{ background: "rgba(227, 40, 175, 1)", display: "flex" }} ><IoPeople style={{ color: "#fff", fontSize: "22px" }} />
+//                                         </div>
+//                                         <div className="rightMessage active">
+//                                             <p className="name">Kleon’s Finance Team</p>
+//                                             <p className="describe">Lorem ipsum dolor sit amet consectetur adipive</p>
+//                                         </div>
+//                                     </div>
+//                                     <div className="new-message">
+//                                         <div className="leftMessage"></div>
+//                                         <div className="rightMessage">
+//                                             <p className="name">Peter John</p>
+//                                             <p className="describe">Lorem ipsum dolor sit amet consectetur adipive</p>
+//                                         </div>
+//                                     </div> */}
+//                                 </div>
+//                             </div>
+//                             <div className="chat_content">
+//                                 <div className="group_name d-flex justify-content-between align-items-center">
+//                                     <div className="group_left d-flex align-items-center">
+//                                     {isChatbotActive ? (
+//                                         <div className="group-icon" style={{ background: "#fff" }}>
+//                                             <img src="khedr.jpg" alt="" style={{width:"30px"}} />
+//                                     </div>
+                                        
+//                                     ):(
+//                                         <div className="group-icon" style={{ background: "#fff" }}>
+//                                             <IoPeople style={{ color: "rgba(32, 32, 32, 1)", fontSize: "22px" }} />
+//                                         </div>
+//                                     )}
+//                                         {isChatbotActive ? (
+//                                                     <div className="chatbot">Khedr</div>
+//                                                 ) : (
+//                                         <div className="des-group">
+//                                             <h4>Kleon Full Team</h4>
+//                                             <p><span>985</span> Participants</p>
+//                                         </div>
+//                                                 )}
+//                                     </div>
+//                                     <div className="group_right d-flex">
+//                                         <FaStar className="star" />
+//                                         <IoMdInformationCircleOutline className="info" />
+//                                         <HiOutlineDotsHorizontal className="dott" />
+//                                     </div>
+//                                 </div>
+//                                     <div className="bord"></div>
+//                                     <div className="new_border">
+//                                         <p>Today, {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</p>
+//                                     </div>
+//                                 <div className="main-chat">
+
+//                                     <div className="start-chat" ref={chatContainerRef}>
+//                                     {/* {isChatbotActive  && messages.length === 0 &&  (
+//                                     <div className="chatbot-welcome">
+//                                         <img src="khedr.jpg" alt="Khedr Logo" className="chatbot-logo" />
+//                                         <h3 style={{marginLeft:"0px" , marginRight:"0px" }}>Hi, I'm Khedr</h3>
+//                                         <p>How can I help you today?</p>
+//                                     </div>
+//                                 )} */}
+//                                     {isChatbotActive ? (
+//                                         <>
+//                                         {/* شات الميتا AI */}
+//                                         {isChatbotActive && chatHistory.length === 0 && (
+//         <div className="chatbot-welcome">
+//             <img src="khedr.jpg" alt="Khedr Logo" className="chatbot-logo" />
+//             <h3 style={{marginInline:"0px"}}>Hi, I'm Khedr</h3>
+//             <p>How can I help you today?</p>
+//         </div>
+//     )}
+    
+//     {chatHistory.map((msg, index) => (
+//   <div key={index} className={`st-message ${msg.isUser ? 'user-message' : 'bot-message'}`}>
+//     {!msg.isUser && (
+//       <div className="leftt leftsss">
+//         <img src="khedr.png" alt="" style={{ width: "30px" }} />
+//       </div>
+//     )}
+//     <div className={`message-content ${msg.isUser ? 'user' : 'bot'}`}>
+//       <div className="nameDate">
+//         <p className="name">{msg.name}</p>
+//         {msg.isUser ? (
+//           <p className="date">{msg.date}</p>
+//         ) : (
+//             <button 
+//             onClick={() => copyToClipboard(msg.rawText || stripHtml(msg.description), msg.id)}
+//             className="copy-btn"
+//             title="Copy message"
+//           >
+//             {copiedMessageId === msg.id ? 'Copied!' : 'Copy'}
+//           </button>
+//         )}
+// {msg.audioPath && (
+//   <div className="audio-controls">
+//     <button 
+//       onClick={(e) => {
+//         e.stopPropagation();
+//         playBotAudio(msg.audioPath, msg.id);
+//       }}
+//       className={`play-pause-btn ${currentPlayingId === msg.id ? 'active' : ''}`}
+//     >
+//       {currentPlayingId === msg.id && isAudioPlaying ? (
+//         <FaPause />
+//       ) : (
+//         <FaPlay />
+//       )}
+//     </button>
+//     {currentPlayingId === msg.id && (
+//       <span className="audio-time">
+//         {Math.floor(audioPositions[msg.id] || 0)}s
+//       </span>
+//     )}
+//   </div>
+// )}
+//       </div>
+//       <div 
+//         className="description" 
+//         style={{ 
+//           direction: isArabic(msg.description) ? 'rtl' : 'ltr',
+//           textAlign: isArabic(msg.description) ? 'right' : 'left'
+//         }}
+//       >
+//         {msg.isUser ? (
+//           <span dangerouslySetInnerHTML={{ __html: msg.description }} />
+//         ) : (
+//           <TypingMessage 
+//             text={msg.rawText || stripHtml(msg.description)} 
+//             onComplete={() => {
+//               // تشغيل الصوت تلقائياً بعد اكتمال الكتابة إذا كان موجوداً
+//               if (msg.audioPath) {
+//                 playBotAudio(msg.audioPath, msg.id);
+//               }
+//             }}
+//           />
+//         )}
+//       </div>
+      
+//       {/* المرفقات والملفات الصوتية */}
+//       {msg.attachments?.map((file, i) => (
+//         <div key={i} className="uploaded-file">
+//           {file.type.startsWith("image/") ? (
+//             <img src={URL.createObjectURL(file)} alt="Uploaded" />
+//           ) : (
+//             <FaFile />
+//           )}
+//         </div>
+//       ))}
+      
+//       {msg.audio && (
+//         <div className="audio-container">
+//           <audio controls>
+//             <source src={msg.audio} type="audio/wav" />
+//             Your browser does not support the audio element.
+//           </audio>
+//         </div>
+//       )}
+//     </div>
+//     {msg.isUser && <div className="rightt rightsss"></div>}
+//   </div>
+// ))}
+//     {isChatbotActive && waitingForBot && (
+//         <TypingIndicator />
+//     )}
+//                                     </>
+//                                 ) : (
+//                                         <>
+//                                         <div className="st-message">
+//                                             <div className="leftt"></div>
+//                                             <div className="right">
+//                                                 <div className="nameDate">
+//                                                     <p className="name">Jean John</p>
+//                                                     <p className="date">at 4.30 AM</p>
+//                                                 </div>
+//                                                 <div className="description">
+//                                                     Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto b
+//                                                 </div>
+//                                             </div>
+//                                         </div>
+//                                         <div className="st-message">
+//                                             <div className="leftt"></div>
+//                                             <div className="right">
+//                                                 <div className="nameDate">
+//                                                     <p className="name">Angela Moss</p>
+//                                                     <p className="date">at 4.30 AM</p>
+//                                                 </div>
+//                                                 <div className="description">
+//                                                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.                                                    </div>
+//                                             </div>
+//                                         </div>
+//                                         <div className="st-message">
+//                                             <div className="leftt"></div>
+//                                             <div className="right">
+//                                                 <div className="nameDate">
+//                                                     <p className="name">Jean John</p>
+//                                                     <p className="date">at 4.30 AM</p>
+//                                                 </div>
+//                                                 <div className="description">
+//                                                     Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto b
+//                                                 </div>
+//                                             </div>
+//                                         </div>
+//                                         <div className="st-message">
+//                                             <div className="leftt"></div>
+//                                             <div className="right">
+//                                                 <div className="nameDate">
+//                                                     <p className="name">Chloe Simatupang</p>
+//                                                     <p className="date">at 4.30 AM</p>
+//                                                 </div>
+//                                                 <div className="description">
+//                                                     dipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis no                                                    </div>
+//                                             </div>
+//                                         </div>
+//                                         </>)}
+//                                         {messages.map((msg, index) => (
+//                                         <div key={index} className="st-message">
+//                                             <div className="leftt"></div>
+//                                             <div className="right">
+//                                                 <div className="nameDate">
+//                                                     <p className="name">{msg.name}</p>
+//                                                     <p className="date">{msg.date}</p>
+//                                                     {msg.audioUrl && (
+//                                                         <button 
+//                                                             onClick={() => playBotAudio(msg.audioUrl)}
+//                                                             style={{
+//                                                                 background: 'none',
+//                                                                 border: 'none',
+//                                                                 cursor: 'pointer',
+//                                                                 marginLeft: '10px'
+//                                                             }}
+//                                                             disabled={currentPlayingAudio?.src === msg.audioUrl}
+//                                                             title="تشغيل الرد الصوتي"
+//                                                         >
+//                                                             {currentPlayingAudio?.src === msg.audioUrl ? (
+//                                                                 <FaPause style={{ color: '#007bff' }} />
+//                                                             ) : (
+//                                                                 <FaPlay style={{ color: '#007bff' }} />
+//                                                             )}
+//                                                         </button>
+//                                                     )}
+//                                                 </div>
+//                                                 <div className="description" 
+//                                                 style={{ 
+//                                                   direction: isArabic(msg.description) ? 'rtl' : 'ltr',
+//                                                   textAlign: isArabic(msg.description) ? 'right' : 'left'
+//                                                 }}
+//                                                 dangerouslySetInnerHTML={{ __html: msg.description }}>
+                                                    
+//                                                 </div>
+
+//                                                 {loading && index === messages.length - 1 && (
+//                                                     <div className="loading">
+//                                                         <p>Typing...</p>
+//                                                     </div>
+//                                                 )}
+//                                                 {/* عرض الملفات المرفقة وجعلها قابلة للفتح */}
+//                                                 {msg.attachments && msg.attachments.length > 0 && (
+//                                                     <div className="attachments" style={{ display: "flex", gap: "10px" }}>
+//                                                         {msg.attachments.map((file, i) => (
+//                                                             <div
+//                                                                 key={i}
+//                                                                 className="uploaded-file"
+//                                                                 onClick={() => window.open(URL.createObjectURL(file), "_blank")}
+//                                                                 style={{ cursor: "pointer" }}
+//                                                             >
+//                                                                 {file.type.startsWith("image/") ? (
+//                                                                     <img
+//                                                                         src={URL.createObjectURL(file)}
+//                                                                         alt="Uploaded"
+//                                                                         className="file-thumbnail"
+//                                                                         style={{ width: "200px", height: "200px", objectFit: "cover", borderRadius: "5px" }}
+//                                                                     />
+//                                                                 ) : (
+//                                                                     <FaFile
+//                                                                         className="file-icon"
+//                                                                         style={{ fontSize: "24px", color: "#007bff" }}
+//                                                                     />
+//                                                                 )}
+//                                                             </div>
+//                                                         ))}
+//                                                     </div>
+//                                                 )}
+
+//                                                 {/* ✅ عرض الصوت إذا كان موجودًا ✅ */}
+//                                                 {msg.audio && (
+//                                                     <div className="audio-container">
+//                                                         <audio controls>
+//                                                             <source src={msg.audio} type="audio/wav" />
+//                                                             website not supported play this audio
+//                                                         </audio>
+//                                                     </div>
+//                                                 )}
+//                                             </div>
+//                                         </div>
+//                                     ))}
+
+//                                     <div ref={messagesEndRef} />
+//                                     </div>
+
+//                                     <div className="bg-white text_message">
+
+//                                     {files.length > 0 && (
+//                                     <div className="upload-preview-container">
+//                                         {files.map((file, index) => (
+//                                             <div key={index} className="uploaded-file">
+//                                                 {file.type.startsWith("image/") ? (
+//                                                     <img src={URL.createObjectURL(file)} alt="Uploaded" className="file-thumbnail" />
+//                                                 ) : (
+//                                                     <FaFile className="file-icon" />
+//                                                 )}
+//                                                 {/* ❌ زر الحذف */}
+//                                                 <TbXboxXFilled
+//                                                     style={{ fontSize: "20px" }}
+//                                                     className="remove-icon"
+//                                                     onClick={() => removeFile(index)} />
+//                                             </div>
+//                                         ))}
+//                                     </div>
+//                                 )}
+
+//                                         {/* منطقة الكتابة */}
+//                                         <div
+//                                             ref={editorRef}
+//                                             contentEditable
+//                                             className="inp-text form-control p-2 min-h-[40px] rounded"
+//                                             style={{ minHeight: "40px", outline: "none", whiteSpace: "pre-wrap", border: "none" }}
+//                                             placeholder="Type message here..."
+//                                             onInput={saveState}
+//                                             onKeyDown={(e) => {
+//                                                 if (e.key === "Enter" && !e.shiftKey) {
+//                                                 e.preventDefault(); // لمنع إضافة سطر جديد
+//                                                 sendMessage(); // استدعاء دالة الإرسال
+//                                                 }
+//                                             }}
+//                                         ></div>
+
+//                                         {/* شريط الأدوات */}
+//                                         <div className=" tool-bar p-2 mt-2 d-flex align-items-center gap-2 ">
+//                                             <div className="left">
+//                                                 <div className="left-left">
+//                                                     <IoIosUndo className="font-18" onClick={undo} disabled={undoStack.length === 0} />
+//                                                     <IoIosRedo className="font-18" onClick={redo} disabled={redoStack.length === 0} />
+//                                                     <LuType className="font-18" onClick={toggleFont} />
+//                                                 </div>
+//                                                 <div className="left-right">
+//                                                     <FaBold style={{ fontSize: "12.8px" }} onClick={() => formatText("bold")} />
+//                                                     <PiTextItalicBold style={{ fontSize: "15.8px" }} onClick={() => formatText("italic")} />
+//                                                     <FaUnderline style={{ fontSize: "12.8px" }} onClick={() => formatText("underline")} />
+//                                                 </div>
+//                                             </div>
+//                                             <div className="right">
+//                                                 <BsEmojiSmileFill ref={emojiButtonRef} style={{ fontSize: "19px" }} onClick={toggleEmojiPicker} />
+
+//                                                 {isRecording ? (
+//                                                     <FaStop
+//                                                         style={{ fontSize: "19px", cursor: "pointer", color: "red" }}
+//                                                         onClick={stopRecording}
+//                                                         title="stop Recording"
+//                                                     />
+//                                                 ) : (
+//                                                     <FaMicrophone
+//                                                         style={{ fontSize: "19px", cursor: "pointer" }}
+//                                                         onClick={startRecording}
+//                                                         title="start Recording"
+//                                                     />
+//                                                 )}
+
+//                                                 {isRecording && <span style={{ color: "red", fontSize: "14px" }}>Recording...</span>}
+
+//                                                 {audioURL && (
+//                                                     <FaPlay
+//                                                         style={{ fontSize: "19px", cursor: "pointer" }}
+//                                                         onClick={playAudio}
+//                                                         title="listen what you say"
+//                                                     />
+//                                                 )}
+//                                               <Paperclip
+//                                                     style={{ fontSize: "19px", cursor: "pointer" }}
+//                                                     className="file"
+//                                                     onClick={() => document.getElementById("fileInput").click()}
+//                                                 />
+//                                                 <input
+//                                                     type="file"
+//                                                     id="fileInput"
+//                                                     hidden
+//                                                     onChange={handleFileChange}
+//                                                 />
+
+//                                                 <button className="btn ms-auto" onClick={sendMessage} disabled={loading} // تعطيل الزر أثناء الإرسال
+//                                                 >
+//                                                     <RiSendPlaneFill />
+                                                    
+//                                                     {loading ? 'Sending...' : 'SEND'}
+
+//                                                 </button>
+//                                             </div>
+//                                         </div>
+//                                         {showEmojiPicker && (
+//                                             <div style={{ position: "absolute", bottom: "55px", right: 0 }}>
+//                                                 <EmojiPicker onEmojiClick={addEmoji} />                                                
+//                                             </div>
+//                                         )}
+//                                     </div>
+//                                 </div>
+//                             </div>
+//                         </div>
+
+//                     </div>
+//                 </div>
+//             </div>
+//         </div>
+//     )
+// }
+
+// export default Chat
+
+
+
+// import { useState, useEffect, useRef } from "react";
+// import Sidebar from "../../compontents/sidebar/sidebar";
+// import Navbar from "../../compontents/navBar/navbar";
+// import { HiOutlineDotsHorizontal } from "react-icons/hi";
+// import { LiaSearchSolid } from "react-icons/lia";
+// import { IoPeople } from "react-icons/io5";
+// import { FaStar } from "react-icons/fa6";
+// import { IoMdInformationCircleOutline } from "react-icons/io";
+// import { Paperclip } from "react-bootstrap-icons";
+// import EmojiPicker from "emoji-picker-react";
+// import { FaUnderline } from "react-icons/fa";
+// import { PiTextItalicBold } from "react-icons/pi";
+// import { FaBold } from "react-icons/fa6";
+// import { IoIosUndo } from "react-icons/io";
+// import { IoIosRedo } from "react-icons/io";
+// import { LuType } from "react-icons/lu";
+// import { BsEmojiSmileFill } from "react-icons/bs";
+// import { RiSendPlaneFill } from "react-icons/ri";
+// import { FaFile } from "react-icons/fa6";
+// import { FaMicrophone, FaPlay } from "react-icons/fa";
+// import { FaStop} from "react-icons/fa";
+// import { FaPause } from "react-icons/fa6";
+// import { FaCircle } from "react-icons/fa"; // لأيقونات الدوائر
+// import { useLocation } from "react-router-dom"; // أضف هذا الاستيراد
+
+// import MetaAIHeader from "./chatbot"
+// import { TbXboxXFilled } from "react-icons/tb";
+// import { Howl } from 'howler';
+// import "./new_chat.css"
+
+// const formatMessage = (message) => {
+//     if (!message) return "";
+//     return message
+//         .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+//         .replace(/\*\s/g, "<br/>• ");
+// };
+
+// const TypingMessage = ({ text }) => { // احذف onComplete من الخصائص
+//     const [displayedText, setDisplayedText] = useState('');
+//     const [currentIndex, setCurrentIndex] = useState(0);
+  
+//     useEffect(() => {
+//       if (!text || currentIndex >= text.length) return; // احذف استدعاء onComplete
+  
+//       const typingSpeed = 10;
+//       const timer = setTimeout(() => {
+//         setDisplayedText(prev => prev + text[currentIndex]);
+//         setCurrentIndex(prev => prev + 1);
+//       }, typingSpeed);
+  
+//       return () => clearTimeout(timer);
+//     }, [currentIndex, text]); // احذف onComplete من dependencies
+  
+//     return <span dangerouslySetInnerHTML={{ __html: formatMessage(displayedText) }} />;
+//   };
+
+
+  
+// function Chat() {
+//     const location = useLocation(); // أضف هذا السطر
+//     const [isRecording, setIsRecording] = useState(false); // حالة التسجيل
+//     const [audioURL, setAudioURL] = useState(null); // رابط ملف الصوت المسجل
+//     const mediaRecorderRef = useRef(null);
+//     const audioChunksRef = useRef([]);
+//     const [undoStack, setUndoStack] = useState([]);
+//     const [redoStack, setRedoStack] = useState([]);
+//     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+//     const [fontIndex, setFontIndex] = useState(0);
+//     const fonts = ["Arial", "Times New Roman", "Courier New", "Georgia", "Verdana"];
+//     const [isChatbotActive, setIsChatbotActive] = useState(false);
+//     const [setEmojiPickerPosition] = useState({ top: 0, left: 0 });
+//     const emojiButtonRef = useRef(null);
+//     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+//     const editorRef = useRef(null);
+//     const [files, setFiles] = useState([]);
+//     const [messages, setMessages] = useState([]);
+//     const [loading, setLoading] = useState(false);
+//     const [audioLoading, setAudioLoading] = useState(false);
+//     const [normalMessages, setNormalMessages] = useState([]); // للشات العادي
+//     const [metaMessages, setMetaMessages] = useState([]); // لشات الميتا
+//     const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+//     const [chatHistory, setChatHistory] = useState([]); // استبدل metaMessages و messages
+//     const [currentPlayingId, setCurrentPlayingId] = useState(null); // لتتبع أي رسالة يتم تشغيلها حالياً
+//     const [currentAudioPosition, setCurrentAudioPosition] = useState(0); // إضافة هذه السطر
+//     const [audioPositions, setAudioPositions] = useState({}); // تخزين موضع التشغيل لكل رسالة
+//     const [waitingForBot, setWaitingForBot] = useState(false);
+//     const messagesEndRef = useRef(null); // أضف هذا السطر
+//     const [sidebarSearchQuery, setSidebarSearchQuery] = useState('');
+//     const [filteredSidebarMessages, setFilteredSidebarMessages] = useState([]);
+//     const soundRef = useRef(null);
+//     const [imageBase64, setImageBase64] = useState("");
+//     const [copiedMessageId, setCopiedMessageId] = useState(null);
+//     const [userId, setUserId] = useState(null);
+//     const [sessionId, setSessionId] = useState(null);
+//     const [isSessionLoading, setIsSessionLoading] = useState(false);
+//     const [showDropdown, setShowDropdown] = useState(false);
+//     const dropdownRef = useRef(null);
+
+//     const validateIds = () => {
+//       console.log("التحقق من أنواع البيانات:", {
+//           userId: typeof userId,
+//           sessionId: typeof sessionId,
+//           storedUserId: typeof localStorage.getItem("userId")
+//       });
+//   };
+  
+//   // استدعها عند الحاجة
+//   useEffect(() => {
+//       validateIds();
+//   }, [userId, sessionId]);
+
+//   useEffect(() => {
+//     const handleClickOutside = (event) => {
+//       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+//         setShowDropdown(false);
+//       }
+//     };
+  
+//     document.addEventListener("mousedown", handleClickOutside);
+//     return () => {
+//       document.removeEventListener("mousedown", handleClickOutside);
+//     };
+//   }, []);
+
+
+//     const createNewSession = async (userId) => {
+//       setIsSessionLoading(true);
+      
+//       try {
+//           const response = await fetch("https://ab2f-41-238-179-181.ngrok-free.app/new_session", {
+//               method: "POST",
+//               headers: {
+//                   "Content-Type": "application/json",
+//                   "Authorization": `Bearer ${localStorage.getItem("authToken")}`
+//               },
+//               body: JSON.stringify({ user_id: userId })
+//           });
+  
+//           if (!response.ok) {
+//               const errorData = await response.json();
+//               throw new Error(errorData.message || "فشل في إنشاء الجلسة");
+//           }
+  
+//           return await response.json();
+          
+//       } catch (error) {
+//           console.error("خطأ في إنشاء الجلسة:", error);
+//           throw error;
+//       } finally {
+//           setIsSessionLoading(false);
+//       }
+//   };
+
+//   const activateMetaWithSession = async () => {
+//     try {
+//         // 1. الحصول على user_id من localStorage
+//         const loggedInUserId = localStorage.getItem("userId");
+//         const authToken = localStorage.getItem("authToken");
+        
+//         if (!loggedInUserId || !authToken) {
+//             throw new Error("يجب تسجيل الدخول أولاً");
+//         }
+
+//         // 2. إرسال طلب إنشاء الجلسة
+//         setIsSessionLoading(true);
+//         const response = await fetch("https://ab2f-41-238-179-181.ngrok-free.app/new_session", {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json",
+//                 "Authorization": `Bearer ${authToken}`
+//             },
+//             body: JSON.stringify({ 
+//                 user_id: loggedInUserId
+//             })
+//         });
+
+//         // 3. معالجة الاستجابة
+//         const data = await response.json();
+        
+//         if (!response.ok) {
+//             throw new Error(data.message || "فشل في إنشاء الجلسة");
+//         }
+
+//         // 4. التحقق من session_id
+//         const sessionId = data.session_id || data.sessionId;
+//         if (!sessionId) {
+//             throw new Error("لم يتم استلام session_id");
+//         }
+
+//         // 5. حفظ البيانات
+//         setSessionId(sessionId);
+//         setUserId(loggedInUserId);
+        
+//         // 6. بدء المحادثة باستخدام resetChatbot من الكود القديم
+//         resetChatbot();
+//         setIsChatbotActive(true);
+
+//         // 7. إضافة رسالة ترحيبية دون عرض معرف الجلسة
+//         // setChatHistory(prev => [...prev, {
+//         //     id: Date.now(),
+//         //     name: "Khedr",
+//         //     date: "Now",
+//         //     description: " ",
+//         //     isUser: false
+//         // }]);
+
+//     } catch (error) {
+//         console.error("خطأ في تفعيل الميتا:", error);
+//         setChatHistory(prev => [...prev, {
+//             id: Date.now(),
+//             name: "System",
+//             date: new Date().toLocaleTimeString(),
+//             description: `Error: ${error.message}`,
+//             isUser: false
+//         }]);
+//     } finally {
+//         setIsSessionLoading(false);
+//     }
+// };
+
+// useEffect(() => {
+//   // تحميل user_id عند بدء التشغيل
+//   const loadedUserId = localStorage.getItem("userId");
+//   if (loadedUserId) {
+//       setUserId(loadedUserId);
+//       console.log("تم تحميل user_id:", loadedUserId);
+//   }
+// }, []);
+
+// const resetChatbot = () => {
+//   setChatHistory([]);
+//   setMetaMessages([]);
+//   setFiles([]);
+//   setAudioURL(null);
+//   setLoading(false);
+//   setWaitingForBot(false);
+//   Howler.stop();
+//   setCurrentPlayingId(null);
+//   setAudioPositions({});
+  
+//   if (editorRef.current) {
+//       editorRef.current.innerHTML = '';
+//   }
+  
+//   // عرض رسالة ترحيبية فقط إذا كانت هناك جلسة نشطة
+ 
+// };
+      
+//     const handleSidebarSearch = (query) => {
+//         setSidebarSearchQuery(query);
+        
+//         if (!query.trim()) {
+//           setFilteredSidebarMessages([]);
+//           return;
+//         }
+      
+//         // البيانات الثابتة التي تظهر في الجانب الأيسر (يمكن استبدالها ببياناتك الفعلية)
+//         const sidebarMessages = [
+//           { name: "Margaretha", description: "I remember that project due is tomorrow." },
+//           { name: "Kleon Full Team", description: "Chloe Simatupang typing..." },
+//           { name: "Marissa Joana", description: "Lorem ipsum dolor sit amet consectetur adipive" },
+//           { name: "Juminten", description: "Lorem ipsum dolor sit amet consectetur adipive" },
+//           { name: "Richard Hunters", description: "Lorem ipsum dolor sit amet consectetur adipive" }
+//         ];
+      
+//         const results = sidebarMessages.filter(item => 
+//           item.name.toLowerCase().includes(query.toLowerCase()) || 
+//           item.description.toLowerCase().includes(query.toLowerCase())
+//         );
+      
+//         setFilteredSidebarMessages(results);
+//       };
+
+//     const scrollToBottom = () => {
+//         if (chatContainerRef.current) {
+//           chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+//         }
+//       };
+
+
+//     const saveState = () => {
+//         if (editorRef.current) {
+//             setUndoStack((prev) => [...prev, editorRef.current.innerHTML]);
+//             setRedoStack([]);
+//         }
+//     };
+
+
+    
+// const convertToWav = async (blob) => {
+//     try {
+//         const arrayBuffer = await blob.arrayBuffer();
+//         const audioContext = new (window.AudioContext || window.webkitAudioContext)({
+//             sampleRate: 16000
+//         });
+
+//         const audioData = await audioContext.decodeAudioData(arrayBuffer);
+//         const wavBuffer = encodeWAV(audioData.getChannelData(0), 16000);
+//         return new Blob([wavBuffer], { type: 'audio/wav' });
+//     } catch (error) {
+//         console.error("Error converting to WAV:", error);
+//         throw error;
+//     }
+// };
+
+// const TypingIndicator = () => {
+//     return (
+//         <div className="typing-indicator bot-message">
+//             <div className="message-content bot">
+//                 <div style={{
+//                     display: 'flex',
+//                     alignItems: 'center',
+//                     gap: '4px',
+//                     padding: '8px 12px'
+//                 }}>
+//                     <div style={{
+//                         width: '12px',
+//                         height: '12px',
+//                         borderRadius: '50%',
+//                         backgroundColor: '#666',
+//                         animation: 'pulse 1.5s infinite ease-in-out'
+//                     }} />
+//                 </div>
+//             </div>
+//         </div>
+//     );
+// };
+// // دالة مساعدة لكتابة النصوص في الرأس
+// const writeString = (view, offset, string) => {
+//     for (let i = 0; i < string.length; i++) {
+//         view.setUint8(offset + i, string.charCodeAt(i));
+//     }
+// };
+
+// const startRecording = async () => {
+//     setIsRecording(true);
+//     audioChunksRef.current = [];
+
+//     try {
+//         const stream = await navigator.mediaDevices.getUserMedia({
+//             audio: {
+//                 sampleRate: 16000,
+//                 channelCount: 1,
+//                 echoCancellation: true,
+//                 noiseSuppression: true,
+//                 autoGainControl: true
+//             }
+//         });
+
+//         const options = {
+//             mimeType: 'audio/webm;codecs=opus',
+//             audioBitsPerSecond: 16000
+//         };
+
+//         const mediaRecorder = new MediaRecorder(stream, options);
+
+//         // إعداد معالج البيانات المتاحة
+//         mediaRecorder.ondataavailable = (event) => {
+//             if (event.data.size > 0) {
+//                 audioChunksRef.current.push(event.data);
+//             }
+//         };
+
+//         // إعداد معالج التوقف
+//         mediaRecorder.onstop = async () => {
+//             try {
+//                 const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+//                 const wavBlob = await convertToWav(audioBlob);
+//                 const url = URL.createObjectURL(wavBlob);
+//                 setAudioURL(url);
+                
+//                 // إيقاف جميع المسارات الصوتية
+//                 stream.getTracks().forEach(track => track.stop());
+//             } catch (error) {
+//                 console.error("Error processing recording:", error);
+//             } finally {
+//                 setIsRecording(false);
+//             }
+//         };
+
+//         mediaRecorderRef.current = mediaRecorder;
+//         mediaRecorder.start(100); // جمع البيانات كل 100 مللي ثانية
+//     } catch (error) {
+//         console.error("Error starting recording:", error);
+//         setIsRecording(false);
+//     }
+// };
+    
+// const verifyAudioQuality = async (blob) => {
+//     try {
+//         const arrayBuffer = await blob.arrayBuffer();
+//         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+//         const audioData = await audioContext.decodeAudioData(arrayBuffer);
+        
+//         const channelData = audioData.getChannelData(0);
+//         let isSilent = true;
+//         let maxAmplitude = 0;
+        
+//         for (let i = 0; i < channelData.length; i++) {
+//             const amplitude = Math.abs(channelData[i]);
+//             if (amplitude > 0.01) {
+//                 isSilent = false;
+//                 maxAmplitude = Math.max(maxAmplitude, amplitude);
+//             }
+//         }
+        
+//         if (isSilent) {
+//             throw new Error("No audio detected (silent recording)");
+//         }
+        
+//         if (maxAmplitude < 0.1) {
+//             throw new Error("Audio volume is too low");
+//         }
+        
+//         console.log("Audio quality check passed", {
+//             duration: audioData.duration.toFixed(2) + "s",
+//             sampleRate: audioData.sampleRate,
+//             maxAmplitude: (maxAmplitude * 100).toFixed(2) + "%"
+//         });
+        
+//         return true;
+//     } catch (error) {
+//         console.error("Audio verification failed:", error);
+//         throw new Error("Audio quality issue: " + error.message);
+//     }
+// };
+
+// const encodeWAV = (audioData, sampleRate = 16000) => {
+//     const numChannels = 1;
+//     const bytesPerSample = 2;
+//     const blockAlign = numChannels * bytesPerSample;
+//     const byteRate = sampleRate * blockAlign;
+    
+//     const buffer = new ArrayBuffer(44 + audioData.length * bytesPerSample);
+//     const view = new DataView(buffer);
+
+//     // كتابة رأس WAV
+//     writeString(view, 0, 'RIFF');
+//     view.setUint32(4, 36 + audioData.length * bytesPerSample, true);
+//     writeString(view, 8, 'WAVE');
+//     writeString(view, 12, 'fmt ');
+//     view.setUint32(16, 16, true);
+//     view.setUint16(20, 1, true); // PCM format
+//     view.setUint16(22, numChannels, true);
+//     view.setUint32(24, sampleRate, true);
+//     view.setUint32(28, byteRate, true);
+//     view.setUint16(32, blockAlign, true);
+//     view.setUint16(34, bytesPerSample * 8, true); // bits per sample
+//     writeString(view, 36, 'data');
+//     view.setUint32(40, audioData.length * bytesPerSample, true);
+
+//     // كتابة بيانات الصوت
+//     let offset = 44;
+//     for (let i = 0; i < audioData.length; i++) {
+//         const sample = Math.max(-1, Math.min(1, audioData[i]));
+//         view.setInt16(offset, sample * 0x7FFF, true);
+//         offset += 2;
+//     }
+
+//     return buffer;
+// };
+
+
+//     const stopRecording = () => {
+//         if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+//             mediaRecorderRef.current.stop();
+//         }
+//     };
+
+
+//     // play Audio
+//     const playAudio = () => {
+//         if (audioURL) {
+//             const audio = new Audio(audioURL);
+//             audio.play();
+//         }
+//     };
+
+
+
+    
+//     // دالة مساعدة لإزالة الوسوم HTML
+//     const stripHtml = (html) => {
+//         return html.replace(/<[^>]*>/g, '');
+//     };
+//     const ChatMessage = ({ text }) => {
+//         return (
+//             <p dangerouslySetInnerHTML={{ __html: formatMessage(text) }} />
+//         );
+//     };
+    
+
+//     //  (Undo)
+//     const undo = () => {
+//         if (undoStack.length > 0) {
+//             const lastState = undoStack.pop();
+//             setRedoStack((prev) => [editorRef.current.innerHTML, ...prev]); // حفظ الحالة الحالية قبل الرجوع
+//             editorRef.current.innerHTML = lastState;
+//             setUndoStack([...undoStack]); // تحديث الـ Stack
+//         }
+//     };
+
+//     //  (Redo)
+//     const redo = () => {
+//         if (redoStack.length > 0) {
+//             const nextState = redoStack.shift();
+//             setUndoStack((prev) => [...prev, editorRef.current.innerHTML]); // حفظ الحالة الحالية قبل التعديل
+//             editorRef.current.innerHTML = nextState;
+//             setRedoStack([...redoStack]); // تحديث الـ Stack
+//         }
+//     };
+
+//     // change font
+//     const toggleFont = () => {
+//         const newIndex = (fontIndex + 1) % fonts.length;
+//         setFontIndex(newIndex);
+//         document.execCommand("fontName", false, fonts[newIndex]);
+//     };
+
+//     // sidebar & resize
+//     const toggleSidebar = () => {
+//         setIsSidebarOpen(!isSidebarOpen);
+//     };
+//     useEffect(() => {
+//         const handleResize = () => {
+//             if (window.innerWidth <= 1120) {
+//                 setIsSidebarOpen(false);
+//             } else {
+//                 setIsSidebarOpen(true);
+//             }
+//         };
+
+//         handleResize();
+
+//         window.addEventListener("resize", handleResize);
+//         return () => window.removeEventListener("resize", handleResize);
+//     }, []);
+  
+
+
+//     // format text
+//     const formatText = (command) => {
+//         document.execCommand(command, false, null);
+//     };
+
+//     // emoji
+//     const addEmoji = (emojiObject) => {
+//         const editor = editorRef.current;
+//         if (!editor) return;
+
+//         // إضافة الإيموجي في نهاية النص
+//         editor.innerHTML += emojiObject.emoji;
+
+//         // إخفاء الـ Emoji Picker بعد الاختيار
+//         setShowEmojiPicker(false);
+//     };
+//     const toggleEmojiPicker = () => {
+//         if (emojiButtonRef.current) {
+//             const rect = emojiButtonRef.current.getBoundingClientRect();
+//             setEmojiPickerPosition({
+//                 top: rect.top - 250, // يطلع فوق الزر
+//                 left: rect.left,
+//             });
+//         }
+//         setShowEmojiPicker(!showEmojiPicker);
+//     };
+
+//     //files
+//     const handleFileChange = (event) => {
+//         const file = event.target.files[0];
+    
+//         if (file) {
+//             // قراءة الصورة وتحويلها إلى Base64
+//             const reader = new FileReader();
+//             reader.readAsDataURL(file);
+//             reader.onloadend = () => {
+//                 setImageBase64(reader.result); // حفظ Base64
+    
+//                 // تحديث قائمة الملفات المرفوعة
+//                 setFiles((prevFiles) => [...prevFiles, file]); 
+    
+//                 console.log("Selected file:", file.name);
+//             };
+//         }
+//     };
+    
+//     useEffect(() => {
+//         if (chatContainerRef.current && !waitingForBot) {
+//           chatContainerRef.current.scrollTo({
+//             top: chatContainerRef.current.scrollHeight,
+//             behavior: "smooth"
+//           });
+//         }
+//       }, [chatHistory]);
+    
+//     const removeFile = (fileIndex) => {
+//         setFiles((prev) => prev.filter((_, index) => index !== fileIndex));
+//     };
+
+//     const isSupportedAudioType = (type) => {
+//         const audio = document.createElement('audio');
+//         return type.startsWith('audio/') && audio.canPlayType(type) !== '';
+//       };
+
+//     const [currentPlayingAudio, setCurrentPlayingAudio] = useState(null);
+//     async function playAudioSafe(audioUrl) {
+//         const audio = new Audio();
+        
+//         // 1. إعداد CORS مهم جداً
+//         audio.crossOrigin = "anonymous";
+        
+//         // 2. إضافة مصادر بديلة (fallback)
+//         const source = document.createElement('source');
+//         source.src = audioUrl;
+        
+//         // 3. تحديد نوع الملف بشكل صريح
+//         const extension = audioUrl.split('.').pop().toLowerCase();
+//         source.type = 
+//           extension === 'mp3' ? 'audio/mpeg' :
+//           extension === 'wav' ? 'audio/wav' :
+//           extension === 'ogg' ? 'audio/ogg' : 'audio/*';
+        
+//         audio.appendChild(source);
+        
+//         try {
+//           await audio.play();
+//           return audio;
+//         } catch (error) {
+//           console.error("فشل التشغيل المباشر:", error);
+          
+//           // 4. حل بديل إذا فشل التشغيل العادي
+//           const response = await fetch(audioUrl, {
+//             headers: { 'Accept': 'audio/mpeg, audio/wav' }
+//           });
+          
+//           const blob = await response.blob();
+//           const blobUrl = URL.createObjectURL(blob);
+//           audio.src = blobUrl;
+          
+//           await audio.play();
+//           return audio;
+//         }
+//       }
+
+//       const playWithHowler = (audioUrl) => {
+//         const sound = new Howl({
+//           src: [audioUrl],
+//           html5: true, // لتفادي مشاكل CORS
+//           format: ['mp3', 'wav'],
+//           onplayerror: function() {
+//             sound.once('unlock', function() {
+//               sound.play();
+//             });
+//           }
+//         });
+//         sound.play();
+//       };
+
+
+//       // هذا التأثير سيتم تنفيذه مرة واحدة عند تحميل المكون
+//       useEffect(() => {
+//         // تحقق مما إذا كان التوجيه جاء من الأيقونة المختصرة
+//         if (location.state?.shouldActivateMeta) {
+//           setIsChatbotActive(true);
+          
+//           // إعادة تعيين حالة الدردشة
+//           setChatHistory([]);
+//           setMetaMessages([]);
+//           setFiles([]);
+//           setAudioURL(null);
+          
+//           // إذا كان لديك أي إعدادات أولية أخرى للميتا شات
+//           initializeMetaChat();
+//         }
+//       }, [location.state]);
+    
+//       const initializeMetaChat = () => {
+//         // أي إعدادات إضافية تحتاجها لبدء الميتا شات
+//         console.log("Meta chat activated from shortcut");
+//       };
+
+//       useEffect(() => {
+//         return () => {
+//           Howler.stop();
+//         };
+//       }, []);
+
+
+//       const playBotAudio = (audioPath, messageId) => {
+//         console.log('Attempting to play audio:', audioPath);
+        
+//         if (!audioPath) {
+//             console.error('No audio path provided');
+//             return;
+//         }
+    
+//         // إنشاء مسار صوتي كامل إذا كان نسبيًا
+//         const fullAudioPath = audioPath.startsWith('http') ? 
+//             audioPath : 
+//             `https://ab2f-41-238-179-181.ngrok-free.app${audioPath}`;
+    
+//         // إذا كان نفس الصوت مشغل بالفعل - إيقاف مؤقت
+//         if (currentPlayingId === messageId && isAudioPlaying) {
+//             const currentPosition = soundRef.current.seek(); // حفظ الموضع الحالي
+//             setAudioPositions(prev => ({
+//                 ...prev,
+//                 [messageId]: currentPosition
+//             }));
+//             soundRef.current.pause();
+//             setIsAudioPlaying(false);
+//             return;
+//         }
+    
+//         // إذا كان نفس الصوت متوقف مؤقتًا - استئناف التشغيل
+//         if (currentPlayingId === messageId && !isAudioPlaying) {
+//             const lastPosition = audioPositions[messageId] || 0;
+//             soundRef.current.seek(lastPosition);
+//             soundRef.current.play();
+//             setIsAudioPlaying(true);
+//             return;
+//         }
+    
+//         // إيقاف أي صوت آخر مشغل
+//         Howler.stop();
+    
+//         soundRef.current = new Howl({
+//             src: [fullAudioPath],
+//             html5: true,
+//             format: ['mp3', 'wav'],
+//             onplay: () => {
+//                 console.log('Playback started');
+//                 setIsAudioPlaying(true);
+//                 setCurrentPlayingId(messageId);
+                
+//                 // البدء من الموضع المحفوظ إذا كان موجودًا
+//                 const lastPosition = audioPositions[messageId] || 0;
+//                 if (lastPosition > 0) {
+//                     soundRef.current.seek(lastPosition);
+//                 }
+//             },
+//             onpause: () => {
+//                 console.log('Playback paused');
+//                 const currentPosition = soundRef.current.seek();
+//                 setAudioPositions(prev => ({
+//                     ...prev,
+//                     [messageId]: currentPosition
+//                 }));
+//             },
+//             onend: () => {
+//                 console.log('Playback ended');
+//                 setIsAudioPlaying(false);
+//                 setCurrentPlayingId(null);
+//                 setAudioPositions(prev => ({
+//                     ...prev,
+//                     [messageId]: 0 // إعادة التعيين إلى الصفر عند الانتهاء
+//                 }));
+//             },
+//             onstop: () => {
+//                 console.log('Playback stopped');
+//                 setIsAudioPlaying(false);
+//                 setCurrentPlayingId(null);
+//             }
+//         });
+    
+//         // البدء من الموضع المحفوظ إذا كان موجودًا
+//         const lastPosition = audioPositions[messageId] || 0;
+//         soundRef.current.seek(lastPosition);
+//         soundRef.current.play();
+    
+//         // تحديث الموضع كل ثانية لتتبع التقدم
+//         const updateInterval = setInterval(() => {
+//             if (soundRef.current && soundRef.current.playing()) {
+//                 const currentPosition = soundRef.current.seek();
+//                 setAudioPositions(prev => ({
+//                     ...prev,
+//                     [messageId]: currentPosition
+//                 }));
+//             } else {
+//                 clearInterval(updateInterval);
+//             }
+//         }, 1000);
+//     };
+//     // الحل البديل للـ streaming باستخدام Audio API العادي
+//     const fallbackAudioStreaming = (audioUrl) => {
+//         try {
+//             const audio = new Audio(audioUrl);
+//             audio.preload = 'none'; // لا تحمل الصوت مسبقاً
+            
+//             audio.oncanplaythrough = () => {
+//                 console.log('Fallback audio ready for streaming');
+//             };
+            
+//             audio.onerror = (e) => {
+//                 console.error('Fallback audio error:', e);
+//             };
+            
+//             const playPromise = audio.play();
+            
+//             if (playPromise !== undefined) {
+//                 playPromise.then(() => {
+//                     setCurrentPlayingAudio(audio);
+//                     return true;
+//                 }).catch(error => {
+//                     console.error('Fallback play failed:', error);
+//                     return false;
+//                 });
+//             }
+            
+//             return true;
+//         } catch (error) {
+//             console.error('All streaming methods failed:', error);
+//             return false;
+//         }
+//     };
+
+//     const isArabic = (text) => {
+//         // Regular expression to match Arabic characters
+//         const arabicRegex = /[\u0600-\u06FF]/;
+//         return arabicRegex.test(text);
+//       };
+
+
+//       const copyToClipboard = (text, messageId) => {
+//         navigator.clipboard.writeText(text)
+//           .then(() => {
+//             console.log('Text copied to clipboard');
+//             setCopiedMessageId(messageId); // تعيين الرسالة التي تم نسخها
+            
+//             // إعادة النص إلى "Copy" بعد 3 ثوانٍ
+//             setTimeout(() => {
+//               setCopiedMessageId(null);
+//             }, 1000);
+//           })
+//           .catch(err => {
+//             console.error('Failed to copy text: ', err);
+//           });
+//       };
+
+
+//       const sendMessage = async () => {
+//         if (!sessionId || !userId) {
+//             setChatHistory(prev => [...prev, {
+//                 id: Date.now(),
+//                 name: "System",
+//                 date: new Date().toLocaleTimeString(),
+//                 description: "الرجاء النقر على أيقونة الميتا لبدء جلسة جديدة أولاً",
+//                 isUser: false
+//             }]);
+//             return;
+//         }
+    
+//         const messageText = editorRef.current?.innerText.trim() || '';
+//         if (!messageText && files.length === 0 && !audioURL) return;
+    
+//         const newMessage = {
+//             id: Date.now(),
+//             name: "You",
+//             date: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+//             description: messageText,
+//             attachments: files,
+//             audio: audioURL || null,
+//             isUser: true
+//         };
+    
+//         setChatHistory(prev => [...prev, newMessage]);
+//         if (editorRef.current) editorRef.current.innerHTML = "";
+//         setFiles([]);
+//         setAudioURL(null);
+    
+//         setLoading(true);
+//         setWaitingForBot(true);
+    
+//         try {
+//             const commonHeaders = {
+//                 "Authorization": `Bearer ${localStorage.getItem("authToken")}`,
+//                 "Session-ID": sessionId,
+//                 "User-ID": userId
+//             };
+    
+//             let response;
+//             let responseData;
+            
+//             if (audioURL) {
+//                 const audioBlob = await fetch(audioURL).then(r => r.blob());
+//                 if (audioBlob.size < 1024) {
+//                     throw new Error("Audio recording is too short");
+//                 }
+//                 await verifyAudioQuality(audioBlob);
+    
+//                 const formData = new FormData();
+//                 formData.append("audio_file", audioBlob, "recording.wav");
+//                 formData.append("session_id", sessionId);
+//                 formData.append("user_id", userId);
+//                 formData.append("sample_rate", "16000");
+//                 formData.append("language", "auto");
+//                 formData.append("speak", "true");
+    
+//                 response = await fetch("https://ab2f-41-238-179-181.ngrok-free.app/voice_convo", {
+//                     method: "POST",
+//                     body: formData,
+//                     headers: commonHeaders
+//                 });
+//             } 
+//             else if (files.length > 0) {
+//                 const formData = new FormData();
+//                 formData.append("image_file", files[0]);
+//                 formData.append("session_id", sessionId);
+//                 formData.append("user_id", userId);
+//                 formData.append("mode", "text");
+//                 formData.append("question", messageText || "Describe this image.");
+//                 formData.append("speak", "false");
+    
+//                 response = await fetch("https://ab2f-41-238-179-181.ngrok-free.app/image_convo", {
+//                     method: "POST",
+//                     body: formData,
+//                     headers: commonHeaders
+//                 });
+//             } 
+//             else {
+//                 response = await fetch("https://ab2f-41-238-179-181.ngrok-free.app/text_convo", {
+//                     method: "POST",
+//                     headers: {
+//                         ...commonHeaders,
+//                         "Content-Type": "application/json"
+//                     },
+//                     body: JSON.stringify({
+//                         query: messageText,
+//                         session_id: sessionId,
+//                         user_id: userId,
+//                         speak_response: true
+//                     })
+//                 });
+//             }
+    
+//             if (!response.ok) {
+//                 const errorText = await response.text();
+//                 console.error("Server Error:", errorText);
+//                 throw new Error(`Request failed with status ${response.status}`);
+//             }
+    
+//             responseData = await response.json();
+//             console.log("Full Response:", responseData); // تسجيل كامل الاستجابة
+    
+//             // تحسين استخراج الرد
+//             const botResponse = responseData.Answer || 
+//                                 responseData.text || 
+//                                 responseData.response || 
+//                                 responseData.message || 
+//                                 "No response";
+    
+//             const audioUrl = responseData.audio_url || 
+//                             (responseData.audio_path ? 
+//                                 `https://ab2f-41-238-179-181.ngrok-free.app${responseData.audio_path}` : 
+//                                 null);
+    
+//             const botMessage = {
+//                 id: Date.now(),
+//                 name: "Khedr",
+//                 date: "Now",
+//                 rawText: botResponse,
+//                 description: formatMessage(botResponse),
+//                 audioPath: audioUrl,
+//                 isUser: false
+//             };
+    
+//             setChatHistory(prev => [...prev, botMessage]);
+    
+//         } catch (error) {
+//             console.error("Error:", error);
+//             setChatHistory(prev => [...prev, {
+//                 id: Date.now(),
+//                 name: "System",
+//                 date: new Date().toLocaleTimeString(),
+//                 description: `Error: ${error.message}`,
+//                 isUser: false
+//             }]);
+//         } finally {
+//             setLoading(false);
+//             setWaitingForBot(false);
+//         }
+//     };
+    
+//     useEffect(() => {
+//       // تحميل user_id عند بدء التشغيل
+//       const loadedUserId = localStorage.getItem("userId");
+//       if (loadedUserId) {
+//           setUserId(loadedUserId);
+//           console.log("تم تحميل user_id:", loadedUserId);
+//       }
+//   }, []);
+
+//     useEffect(() => {
+//         const timer = setTimeout(() => {
+//           if (chatContainerRef.current) {
+//             chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+//           }
+//         }, 100);
+        
+//         return () => clearTimeout(timer);
+//       }, [chatHistory]);
+    
+//     const chatContainerRef = useRef(null);
+
+    
+//     useEffect(() => {
+//   // تحقق مما إذا كان التوجيه جاء من الأيقونة المختصرة
+//   if (location.state?.activateMeta) {
+//     setIsChatbotActive(true);
+//     resetChatbot();
+//   }
+// }, [location.state]);
+
+
+//     return (
+// <div className={`app ${isChatbotActive ? 'is-chatbot-active' : ''}`}>
+//         <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+//             <div className="main-content">
+//                 <div className={`sidebar-container ${isSidebarOpen ? "open" : "closed"}`}>
+//                     <Sidebar />
+//                 </div>
+//                 <div className={`content flex-column ${isSidebarOpen ? "shifted" : ""}`}>
+//                     <div className="s-order s-setting s-chatting">
+//                         <div className="main-chatting">
+//                             <div className="all_messages">
+//                                 <div className="top-message">
+//                                     <div className="top_top">
+//                                         <p>RECENT MESSAGE</p>
+//                                         <HiOutlineDotsHorizontal className="dott" />
+//                                     </div>
+//                                     <div className="top_search">
+//                                       <div className="top-search-left">
+//                                         <input 
+//                                             type="text" 
+//                                             className="search-in" 
+//                                             placeholder="Search contacts..."
+//                                             value={sidebarSearchQuery}
+//                                             onChange={(e) => handleSidebarSearch(e.target.value)}
+//                                         />
+//                                         <LiaSearchSolid className="icon-sear" />
+//                                       </div>
+//                                       <div 
+//     className="meta" 
+//     style={{ cursor: isSessionLoading ? 'wait' : 'pointer' }}
+//     onClick={activateMetaWithSession} // هنا يتم استدعاء الدالة مباشرة
+// >
+//     {isSessionLoading ? (
+//         <div className="loading-spinner"></div>
+//     ) : (
+//         <MetaAIHeader/>
+//     )}                                            
+// </div>
+//                                         </div>
+//                                 </div>
+//                                 <div className="my-messages">
+//                                     <div >
+//                                     {(sidebarSearchQuery ? filteredSidebarMessages : [
+//     { name: "Margaretha", description: "I remember that project due is tomorrow." },
+//     { name: "Kleon Full Team", description: "Chloe Simatupang typing..." },
+//     { name: "Marissa Joana", description: "Lorem ipsum dolor sit amet consectetur adipive" },
+//     { name: "Juminten", description: "Lorem ipsum dolor sit amet consectetur adipive" },
+//     { name: "Richard Hunters", description: "Lorem ipsum dolor sit amet consectetur adipive" },
+  
+// ]).map((message, index) => (
+//     <div key={index} className="new-message" onClick={() => setIsChatbotActive(false)} style={{"cursor":"pointer"}} // إضافة هذا السطر
+// >
+//       <div className="leftMessage"></div>
+//       <div className="rightMessage">
+//         <p className="name">{message.name}</p>
+//         <p className="describe">{message.description}</p>
+//       </div>
+//     </div>
+//   ))}
+// </div>
+//                                     {/* <div className="new-message">
+//                                         <div className="leftMessage justify-content-center align-items-center " style={{ background: "rgba(128, 205, 106, 1)", display: "flex" }} ><IoPeople style={{ color: "#fff", fontSize: "22px" }} />
+//                                         </div>
+//                                         <div className="rightMessage">
+//                                             <p className="name">Fathers Club</p>
+//                                             <p className="describe">Lorem ipsum dolor sit amet consectetur adipive</p>
+//                                         </div>
+//                                     </div>
+//                                     <div className="new-message">
+//                                         <div className="leftMessage justify-content-center align-items-center " style={{ background: "rgba(227, 40, 175, 1)", display: "flex" }} ><IoPeople style={{ color: "#fff", fontSize: "22px" }} />
+//                                         </div>
+//                                         <div className="rightMessage active">
+//                                             <p className="name">Kleon’s Finance Team</p>
+//                                             <p className="describe">Lorem ipsum dolor sit amet consectetur adipive</p>
+//                                         </div>
+//                                     </div>
+//                                     <div className="new-message">
+//                                         <div className="leftMessage"></div>
+//                                         <div className="rightMessage">
+//                                             <p className="name">Peter John</p>
+//                                             <p className="describe">Lorem ipsum dolor sit amet consectetur adipive</p>
+//                                         </div>
+//                                     </div> */}
+//                                 </div>
+//                             </div>
+//                             <div className="chat_content">
+//                                 <div className="group_name d-flex justify-content-between align-items-center">
+//                                     <div className="group_left d-flex align-items-center">
+//                                     {isChatbotActive ? (
+//                                         <div className="group-icon" style={{ background: "#fff" }}>
+//                                             <img src="khedr.jpg" alt="" style={{width:"30px"}} />
+//                                     </div>
+                                        
+//                                     ):(
+//                                         <div className="group-icon" style={{ background: "#fff" }}>
+//                                             <IoPeople style={{ color: "rgba(32, 32, 32, 1)", fontSize: "22px" }} />
+//                                         </div>
+//                                     )}
+//                                         {isChatbotActive ? (
+//                                                     <div className="chatbot">Khedr</div>
+//                                                 ) : (
+//                                         <div className="des-group">
+//                                             <h4>Kleon Full Team</h4>
+//                                             <p><span>985</span> Participants</p>
+//                                         </div>
+//                                                 )}
+//                                     </div>
+//                                     <div className="group_right d-flex">
+//                                         <FaStar className="star" />
+//                                         <IoMdInformationCircleOutline className="info" />
+//                                         <HiOutlineDotsHorizontal className="dott" />
+//                                     </div>
+//                                 </div>
+//                                     <div className="bord"></div>
+//                                     <div className="new_border">
+//                                         <p>Today, {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</p>
+//                                     </div>
+//                                 <div className="main-chat">
+
+//                                     <div className="start-chat" ref={chatContainerRef}>
+//                                     {/* {isChatbotActive  && messages.length === 0 &&  (
+//                                     <div className="chatbot-welcome">
+//                                         <img src="khedr.jpg" alt="Khedr Logo" className="chatbot-logo" />
+//                                         <h3 style={{marginLeft:"0px" , marginRight:"0px" }}>Hi, I'm Khedr</h3>
+//                                         <p>How can I help you today?</p>
+//                                     </div>
+//                                 )} */}
+//                                     {isChatbotActive ? (
+//                                         <>
+//                                         {/* شات الميتا AI */}
+//                                         {isChatbotActive && chatHistory.length === 0 && (
+//         <div className="chatbot-welcome">
+//             <img src="khedr.jpg" alt="Khedr Logo" className="chatbot-logo" />
+//             <h3 style={{marginInline:"0px"}}>Hi, I'm Khedr</h3>
+//             <p>How can I help you today?</p>
+//         </div>
+//     )}
+    
+//     {chatHistory.map((msg, index) => (
+//   <div key={index} className={`st-message ${msg.isUser ? 'user-message' : 'bot-message'}`}>
+//     {!msg.isUser && (
+//       <div className="leftt leftsss">
+//         <img src="khedr.png" alt="" style={{ width: "30px" }} />
+//       </div>
+//     )}
+//     <div className={`message-content ${msg.isUser ? 'user' : 'bot'}`}>
+//       <div className="nameDate">
+//         <p className="name">{msg.name}</p>
+//         {msg.isUser ? (
+//           <p className="date">{msg.date}</p>
+//         ) : (
+//             <button 
+//             onClick={() => copyToClipboard(msg.rawText || stripHtml(msg.description), msg.id)}
+//             className="copy-btn"
+//             title="Copy message"
+//           >
+//             {copiedMessageId === msg.id ? 'Copied!' : 'Copy'}
+//           </button>
+//         )}
+// {msg.audioPath && (
+//   <div className="audio-controls">
+//     <button 
+//       onClick={(e) => {
+//         e.stopPropagation();
+//         playBotAudio(msg.audioPath, msg.id);
+//       }}
+//       className={`play-pause-btn ${currentPlayingId === msg.id ? 'active' : ''}`}
+//     >
+//       {currentPlayingId === msg.id && isAudioPlaying ? (
+//         <FaPause />
+//       ) : (
+//         <FaPlay />
+//       )}
+//     </button>
+//     {currentPlayingId === msg.id && (
+//       <span className="audio-time">
+//         {Math.floor(audioPositions[msg.id] || 0)}s
+//       </span>
+//     )}
+//   </div>
+// )}
+//       </div>
+//       <div 
+//         className="description" 
+//         style={{ 
+//           direction: isArabic(msg.description) ? 'rtl' : 'ltr',
+//           textAlign: isArabic(msg.description) ? 'right' : 'left'
+//         }}
+//       >
+//         {msg.isUser ? (
+//           <span dangerouslySetInnerHTML={{ __html: msg.description }} />
+//         ) : (
+//           <TypingMessage 
+//             text={msg.rawText || stripHtml(msg.description)} 
+//             onComplete={() => {
+//               // تشغيل الصوت تلقائياً بعد اكتمال الكتابة إذا كان موجوداً
+//               if (msg.audioPath) {
+//                 playBotAudio(msg.audioPath, msg.id);
+//               }
+//             }}
+//           />
+//         )}
+//       </div>
+      
+//       {/* المرفقات والملفات الصوتية */}
+//       {msg.attachments?.map((file, i) => (
+//         <div key={i} className="uploaded-file">
+//           {file.type.startsWith("image/") ? (
+//             <img src={URL.createObjectURL(file)} alt="Uploaded" />
+//           ) : (
+//             <FaFile />
+//           )}
+//         </div>
+//       ))}
+      
+//       {msg.audio && (
+//         <div className="audio-container">
+//           <audio controls>
+//             <source src={msg.audio} type="audio/wav" />
+//             Your browser does not support the audio element.
+//           </audio>
+//         </div>
+//       )}
+//     </div>
+//     {msg.isUser && <div className="rightt rightsss"></div>}
+//   </div>
+// ))}
+//     {isChatbotActive && waitingForBot && (
+//         <TypingIndicator />
+//     )}
+//                                     </>
+//                                 ) : (
+//                                         <>
+//                                         <div className="st-message">
+//                                             <div className="leftt"></div>
+//                                             <div className="right">
+//                                                 <div className="nameDate">
+//                                                     <p className="name">Jean John</p>
+//                                                     <p className="date">at 4.30 AM</p>
+//                                                 </div>
+//                                                 <div className="description">
+//                                                     Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto b
+//                                                 </div>
+//                                             </div>
+//                                         </div>
+//                                         <div className="st-message">
+//                                             <div className="leftt"></div>
+//                                             <div className="right">
+//                                                 <div className="nameDate">
+//                                                     <p className="name">Angela Moss</p>
+//                                                     <p className="date">at 4.30 AM</p>
+//                                                 </div>
+//                                                 <div className="description">
+//                                                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.                                                    </div>
+//                                             </div>
+//                                         </div>
+//                                         <div className="st-message">
+//                                             <div className="leftt"></div>
+//                                             <div className="right">
+//                                                 <div className="nameDate">
+//                                                     <p className="name">Jean John</p>
+//                                                     <p className="date">at 4.30 AM</p>
+//                                                 </div>
+//                                                 <div className="description">
+//                                                     Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto b
+//                                                 </div>
+//                                             </div>
+//                                         </div>
+//                                         <div className="st-message">
+//                                             <div className="leftt"></div>
+//                                             <div className="right">
+//                                                 <div className="nameDate">
+//                                                     <p className="name">Chloe Simatupang</p>
+//                                                     <p className="date">at 4.30 AM</p>
+//                                                 </div>
+//                                                 <div className="description">
+//                                                     dipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis no                                                    </div>
+//                                             </div>
+//                                         </div>
+//                                         </>)}
+//                                         {messages.map((msg, index) => (
+//                                         <div key={index} className="st-message">
+//                                             <div className="leftt"></div>
+//                                             <div className="right">
+//                                                 <div className="nameDate">
+//                                                     <p className="name">{msg.name}</p>
+//                                                     <p className="date">{msg.date}</p>
+//                                                     {msg.audioUrl && (
+//                                                         <button 
+//                                                             onClick={() => playBotAudio(msg.audioUrl)}
+//                                                             style={{
+//                                                                 background: 'none',
+//                                                                 border: 'none',
+//                                                                 cursor: 'pointer',
+//                                                                 marginLeft: '10px'
+//                                                             }}
+//                                                             disabled={currentPlayingAudio?.src === msg.audioUrl}
+//                                                             title="تشغيل الرد الصوتي"
+//                                                         >
+//                                                             {currentPlayingAudio?.src === msg.audioUrl ? (
+//                                                                 <FaPause style={{ color: '#007bff' }} />
+//                                                             ) : (
+//                                                                 <FaPlay style={{ color: '#007bff' }} />
+//                                                             )}
+//                                                         </button>
+//                                                     )}
+//                                                 </div>
+//                                                 <div className="description" 
+//                                                 style={{ 
+//                                                   direction: isArabic(msg.description) ? 'rtl' : 'ltr',
+//                                                   textAlign: isArabic(msg.description) ? 'right' : 'left'
+//                                                 }}
+//                                                 dangerouslySetInnerHTML={{ __html: msg.description }}>
+                                                    
+//                                                 </div>
+
+//                                                 {loading && index === messages.length - 1 && (
+//                                                     <div className="loading">
+//                                                         <p>Typing...</p>
+//                                                     </div>
+//                                                 )}
+//                                                 {/* عرض الملفات المرفقة وجعلها قابلة للفتح */}
+//                                                 {msg.attachments && msg.attachments.length > 0 && (
+//                                                     <div className="attachments" style={{ display: "flex", gap: "10px" }}>
+//                                                         {msg.attachments.map((file, i) => (
+//                                                             <div
+//                                                                 key={i}
+//                                                                 className="uploaded-file"
+//                                                                 onClick={() => window.open(URL.createObjectURL(file), "_blank")}
+//                                                                 style={{ cursor: "pointer" }}
+//                                                             >
+//                                                                 {file.type.startsWith("image/") ? (
+//                                                                     <img
+//                                                                         src={URL.createObjectURL(file)}
+//                                                                         alt="Uploaded"
+//                                                                         className="file-thumbnail"
+//                                                                         style={{ width: "200px", height: "200px", objectFit: "cover", borderRadius: "5px" }}
+//                                                                     />
+//                                                                 ) : (
+//                                                                     <FaFile
+//                                                                         className="file-icon"
+//                                                                         style={{ fontSize: "24px", color: "#007bff" }}
+//                                                                     />
+//                                                                 )}
+//                                                             </div>
+//                                                         ))}
+//                                                     </div>
+//                                                 )}
+
+//                                                 {/* ✅ عرض الصوت إذا كان موجودًا ✅ */}
+//                                                 {msg.audio && (
+//                                                     <div className="audio-container">
+//                                                         <audio controls>
+//                                                             <source src={msg.audio} type="audio/wav" />
+//                                                             website not supported play this audio
+//                                                         </audio>
+//                                                     </div>
+//                                                 )}
+//                                             </div>
+//                                         </div>
+//                                     ))}
+
+//                                     <div ref={messagesEndRef} />
+//                                     </div>
+
+//                                     <div className="bg-white text_message">
+
+//                                     {files.length > 0 && (
+//                                     <div className="upload-preview-container">
+//                                         {files.map((file, index) => (
+//                                             <div key={index} className="uploaded-file">
+//                                                 {file.type.startsWith("image/") ? (
+//                                                     <img src={URL.createObjectURL(file)} alt="Uploaded" className="file-thumbnail" />
+//                                                 ) : (
+//                                                     <FaFile className="file-icon" />
+//                                                 )}
+//                                                 {/* ❌ زر الحذف */}
+//                                                 <TbXboxXFilled
+//                                                     style={{ fontSize: "20px" }}
+//                                                     className="remove-icon"
+//                                                     onClick={() => removeFile(index)} />
+//                                             </div>
+//                                         ))}
+//                                     </div>
+//                                 )}
+
+//                                         {/* منطقة الكتابة */}
+//                                         <div
+//                                             ref={editorRef}
+//                                             contentEditable
+//                                             className="inp-text form-control p-2 min-h-[40px] rounded"
+//                                             style={{ minHeight: "40px", outline: "none", whiteSpace: "pre-wrap", border: "none" }}
+//                                             placeholder="Type message here..."
+//                                             onInput={saveState}
+//                                             onKeyDown={(e) => {
+//                                                 if (e.key === "Enter" && !e.shiftKey) {
+//                                                 e.preventDefault(); // لمنع إضافة سطر جديد
+//                                                 sendMessage(); // استدعاء دالة الإرسال
+//                                                 }
+//                                             }}
+//                                         ></div>
+
+//                                         {/* شريط الأدوات */}
+//                                         <div className=" tool-bar p-2 mt-2 d-flex align-items-center gap-2 ">
+//                                             <div className="left">
+//                                                 <div className="left-left">
+//                                                     <IoIosUndo className="font-18" onClick={undo} disabled={undoStack.length === 0} />
+//                                                     <IoIosRedo className="font-18" onClick={redo} disabled={redoStack.length === 0} />
+//                                                     <LuType className="font-18" onClick={toggleFont} />
+//                                                 </div>
+//                                                 <div className="left-right">
+//                                                     <FaBold style={{ fontSize: "12.8px" }} onClick={() => formatText("bold")} />
+//                                                     <PiTextItalicBold style={{ fontSize: "15.8px" }} onClick={() => formatText("italic")} />
+//                                                     <FaUnderline style={{ fontSize: "12.8px" }} onClick={() => formatText("underline")} />
+//                                                 </div>
+//                                             </div>
+//                                             <div className="right">
+//                                                 <BsEmojiSmileFill ref={emojiButtonRef} style={{ fontSize: "19px" }} onClick={toggleEmojiPicker} />
+
+//                                                 {isRecording ? (
+//                                                     <FaStop
+//                                                         style={{ fontSize: "19px", cursor: "pointer", color: "red" }}
+//                                                         onClick={stopRecording}
+//                                                         title="stop Recording"
+//                                                     />
+//                                                 ) : (
+//                                                     <FaMicrophone
+//                                                         style={{ fontSize: "19px", cursor: "pointer" }}
+//                                                         onClick={startRecording}
+//                                                         title="start Recording"
+//                                                     />
+//                                                 )}
+
+//                                                 {isRecording && <span style={{ color: "red", fontSize: "14px" }}>Recording...</span>}
+
+//                                                 {audioURL && (
+//                                                     <FaPlay
+//                                                         style={{ fontSize: "19px", cursor: "pointer" }}
+//                                                         onClick={playAudio}
+//                                                         title="listen what you say"
+//                                                     />
+//                                                 )}
+//                                               <Paperclip
+//                                                     style={{ fontSize: "19px", cursor: "pointer" }}
+//                                                     className="file"
+//                                                     onClick={() => document.getElementById("fileInput").click()}
+//                                                 />
+//                                                 <input
+//                                                     type="file"
+//                                                     id="fileInput"
+//                                                     hidden
+//                                                     onChange={handleFileChange}
+//                                                 />
+
+//                                                 <button className="btn ms-auto" onClick={sendMessage} disabled={loading} // تعطيل الزر أثناء الإرسال
+//                                                 >
+//                                                     <RiSendPlaneFill />
+                                                    
+//                                                     {loading ? 'Sending...' : 'SEND'}
+
+//                                                 </button>
+//                                             </div>
+//                                         </div>
+//                                         {showEmojiPicker && (
+//                                             <div style={{ position: "absolute", bottom: "55px", right: 0 }}>
+//                                                 <EmojiPicker onEmojiClick={addEmoji} />                                                
+//                                             </div>
+//                                         )}
+//                                     </div>
+//                                 </div>
+//                             </div>
+//                         </div>
+
+//                     </div>
+//                 </div>
+//             </div>
+//         </div>
+//     )
+// }
+
+// export default Chat

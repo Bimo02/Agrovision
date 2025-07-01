@@ -1,0 +1,485 @@
+.farm-inventory-page {
+  width: 100%;
+  font-family: syne;
+}
+
+.inventory-container {
+  padding: 20px, 10px, 10px, 100px;
+
+  overflow: hidden;
+
+  align-items: center;
+  align-content: center;
+  height: 15vh;
+}
+/* Edit Product Form */
+.edit-product-form {
+  background-color: #ddd;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto; /* In case the form content is too long */
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center form content vertically */
+  align-items: center; /* Center form content horizontally */
+  box-sizing: border-box;
+}
+
+/* Full screen overlay */
+.edit-product-form::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #f0eeee; /* Dark overlay */
+  z-index: -1;
+}
+
+.image-preview {
+  width: 150px; /* عرض الصورة */
+  height: 150px; /* ارتفاع الصورة */
+  object-fit: cover; /* لضبط الصورة بشكل صحيح داخل المربع */
+  border-radius: 8px; /* لإعطاء الصورة حواف مدورة */
+  margin-top: 10px; /* إضافة مسافة فوق الصورة */
+}
+
+/* Form title */
+.edit-product-form h1 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Form container */
+.edit-product-form form {
+  display: flex;
+  flex-direction: column;
+  width: 90%; /* Adjust form width as needed */
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.edit-product-form form div {
+  margin-bottom: 20px;
+}
+
+.edit-product-form label {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+.edit-product-form input {
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.edit-product-form input:focus {
+  border-color: #4a90e2;
+}
+
+/* Button styling */
+.edit-product-form button {
+  background-color: #35b760;
+  color: #fff;
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.edit-product-form button:hover {
+  background-color: #184827;
+}
+
+.edit-product-form button[type="button"] {
+  background-color: #ccc;
+  margin-top: 5px;
+}
+
+.edit-product-form button[type="button"]:hover {
+  background-color: #999;
+}
+
+.inventory-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-left: 40px;
+  margin-right: 40px;
+}
+.inventory-header .farm-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.inventory-header h1 {
+  font-size: 24px;
+  font-weight: bold;
+  color: rgba(32, 34, 36, 1);
+}
+.add-new-button p {
+  font-size: 13.88px;
+  height: 19px;
+  top: 188.17px;
+  left: 627.13px;
+  gap: 0px;
+  opacity: 0px;
+}
+.add-new-button {
+  padding: 3px 7px;
+  font-size: 16px;
+  background: #d9d9d9;
+  color: #797979;
+  border: 0.3px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-family: Syne;
+  height: auto;
+  gap: 0px;
+  border-radius: 3.17px 3.17px 3.17px 3.17px;
+
+  top: 185px;
+  left: 620px;
+}
+
+.inventory-table table {
+  width: 1050px;
+  background-color: #fff;
+  border-collapse: collapse;
+  align-items: center;
+  align-content: center;
+  border: 0.3px solid #b9b9b9;
+}
+
+.inventory-table th,
+.inventory-table td {
+  padding: 12px;
+  text-align: center;
+  background-color: #fff;
+  border-top: 1px solid #ddd;
+}
+
+.inventory-table th {
+  background-color: #fff;
+  font-weight: bold;
+}
+.inventory-table td {
+  height: 89px;
+  color: rgba(32, 34, 36, 1);
+  font-size: 14px;
+}
+
+.product-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.inventory-table .status-in {
+  color: rgba(88, 169, 66, 1);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.inventory-table .status-out {
+  color: rgba(238, 106, 95, 1);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.action-icons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+.action-icons .back-action {
+  position: relative;
+  gap: 20px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  background-color: rgba(250, 251, 253, 1);
+  border: 0.6px solid rgba(213, 213, 213, 1);
+}
+.action-icons .back-action::after {
+  position: absolute;
+  content: "";
+  width: 0.6px;
+  height: 31px;
+  background-color: rgba(213, 213, 213, 1);
+  top: 0;
+  left: 33.3% !important;
+}
+.action-icons .back-action::before {
+  position: absolute;
+  content: "";
+  width: 0.6px;
+  height: 31px;
+  background-color: rgba(213, 213, 213, 1);
+  top: 0;
+  left: 66.6%;
+}
+
+.edit-icon,
+.delete-icon {
+  cursor: pointer;
+  font-size: 16px;
+}
+.delete-icon {
+  font-size: 17px;
+  color: rgba(239, 56, 38, 1);
+}
+
+.search-input2 {
+  padding: 10px;
+  border: 1px solid #fff;
+  border-radius: 14px;
+  font-size: 14px;
+  outline: none;
+  align-items: end;
+  align-content: end;
+  transition: box-shadow 0.2s ease-in-out;
+  width: 253px;
+  height: 38px;
+  top: 175px;
+  left: 1425px;
+}
+
+.edit-form {
+  padding: 20px;
+
+  position: 350px;
+  margin-left: 250px;
+}
+
+.search-bar2 {
+  display: flex;
+  position: relative; /* تأكد من جعل الحاوية ذات موقع نسبي */
+  align-items: center;
+}
+
+.search-input2 {
+  padding: 10px 10px 10px 40px; /* أضف مسافة يسار لترك مساحة للأيقونة */
+  border: 1px solid #fff;
+  border-radius: 14px;
+  font-size: 14px;
+  outline: none;
+  transition: box-shadow 0.2s ease-in-out;
+  width: 253px;
+  height: 38px;
+}
+
+.search-input2::placeholder {
+  color: rgb(143, 144, 145);
+}
+
+.search-icon {
+  position: absolute;
+  left: 15px; /* تأكد من أن الأيقونة تبقى ثابتة */
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+}
+
+.inventory-table {
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+  margin: 0 20px;
+}
+
+.inventory-table table {
+  width: 100%; /* اجعل الجدول يأخذ عرض الحاوية */
+  max-width: 1200px; /* حد أقصى للعرض */
+  border-collapse: collapse;
+  background-color: #fff;
+}
+
+.inventory-table th,
+.inventory-table td {
+  padding: 12px;
+}
+
+.inventory-table th {
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .inventory-table table {
+    font-size: 12px; /* تصغير النصوص على الشاشات الصغيرة */
+  }
+
+  .inventory-table th,
+  .inventory-table td {
+    padding: 8px; /* تقليل الحشوة الداخلية */
+  }
+  .main-content {
+    display: block;
+  }
+  .inventory-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+
+.full-screen-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.9); /* خلفية سوداء شفافة */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* تأكد من أنها تظهر فوق كل العناصر */
+}
+
+/* الرسوم المتحركة للـ spinner */
+.loader-icon {
+  border: 4px solid #ffffff; /* اللون الأبيض للحدود */
+  border-top: 4px solid #7AC043; /* تغيير اللون للحدود العليا */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite; /* تأثير الدوران */
+}
+
+/* تحريك الـ spinner */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Market Popup Styles */
+.market-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.market-popup {
+  background-color: white;
+  border-radius: 10px;
+  width: 500px;
+  max-width: 90%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.popup-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.close-popup {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #6c757d;
+}
+
+.popup-content {
+  display: flex;
+  padding: 20px;
+  gap: 20px;
+  flex-direction: column;
+
+}
+
+.description-section, .category-section {
+  flex: 1;
+}
+
+.description-section textarea {
+  width: 100%;
+  height: 120px;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  resize: vertical;
+  outline: none;
+}
+
+.category-section select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background-color: white;
+  outline: none;
+
+}
+
+.send-to-market-btn {
+  display: block;
+  width: calc(50% - 40px);
+  margin: 0 20px 20px;
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  margin-inline: auto;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s;
+}
+
+.send-to-market-btn:hover {
+  background-color: #218838;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .popup-content {
+    flex-direction: column;
+  }
+}

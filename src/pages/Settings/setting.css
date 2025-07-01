@@ -1,0 +1,201 @@
+.main-setting{
+    margin: 30px;
+    background: rgba(255, 255, 255, 1);
+    border-radius: 12.7px;
+    padding: 30px;
+}
+.main-setting .save-bot{
+    width: 220px;
+    margin-top: 100px;
+    background: rgba(56, 109, 47, 1);
+    color: #fff;
+    margin-left: auto;
+}
+.main-setting .photo-sett{
+    margin-right: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+.main-setting .photo-sett p{
+    font-size: 14.5px;
+    font-family: "Open Sans";
+    font-weight: 600;
+    letter-spacing: 0.91px;
+    color: rgba(199, 199, 199, 1);
+}
+.main-setting .photo-sett img{
+    width: 223px;
+    border-radius: 12.7px;
+    height: 250px;
+}
+.main-setting  button {
+    border: 0.91px solid rgba(56, 109, 47, 1);
+    width: 100%;
+    height: 54px;
+    border-radius: 12.7px;
+    background: transparent;
+    font-size: 16.4px;
+    font-family: "cairo";
+    font-weight: 700;
+    color: rgba(56, 109, 47, 1);
+    margin-top: 10px;
+}
+.main-setting .photo-sett .camera-photo{
+    margin-right: 5px;
+    font-size: 21px;
+}
+.main-setting .photo-sett label{
+    border: 0.91px solid rgba(56, 109, 47, 1);
+    width: 100%;
+    height: 54px;
+    border-radius: 12.7px;
+    background: transparent;
+    font-size: 16.4px;
+    font-family: "cairo";
+    font-weight: 700;
+    color: rgba(56, 109, 47, 1);
+    margin-top: 10px;
+    display: flex
+;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+.main-setting form .dueDate{
+    width: calc(100% / 3);
+    margin-top: 0;
+    margin-left: 0;
+}
+.main-setting form label {
+    color: rgba(199, 199, 199, 1);
+    font-size: 11.59px;
+    font-family: "Open Sans";
+    font-weight: 700;
+    letter-spacing: 0.91px;
+}
+.main-setting form {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: space-between;
+    align-content: flex-start;
+    margin-top: 10px;
+}
+
+.main-setting form .form-control:focus{
+    border: 1.8px solid rgba(56, 109, 47, 1);
+    box-shadow: none;
+}
+.main-setting form .col-md-4 {
+    flex: 1 1 calc(33.333% - 15px); /* 3 inputs في كل صف */
+    min-width: 250px;
+}
+
+.main-setting .form-label {
+    font-weight: bold;
+}
+
+.main-setting .form-control {
+    color: rgba(32, 32, 32, 1) !important;
+    width: 100%;
+    padding: 8px;
+    height: 54px;
+    border: 0.9px solid rgba(194, 194, 194, 1);
+    border-radius: 12.7px;
+    font-family: "cairo";
+    font-size: 16px !important;
+    font-weight: 600;
+}
+
+.date-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.form-control {
+    padding-right: 35px; /* مساحة للأيقونة */
+}
+
+.calendar-icon {
+    position: absolute;
+    right: 15px;
+    cursor: pointer;
+    color: rgba(56, 109, 47, 1);
+    font-size: 21px;
+}
+
+
+
+.hidden-date-picker {
+    appearance: none;
+    opacity: 0;
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+.s-setting h3{
+    margin-left: 30px;
+    margin-right: 20px;
+    margin-top: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: rgba(32, 34, 36, 1);
+}
+
+.main-setting .dropdown-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.main-setting .dropdown-select {
+    appearance: none; /* يخفي السهم الافتراضي */
+    width: 100%;
+    padding-right: 35px; /* مساحة للسهم */
+    cursor: pointer;
+}
+
+.main-setting .dropdown-icon {
+    position: absolute;
+    right: 15px;
+    pointer-events: none;
+    color: rgba(56, 109, 47, 1);
+    font-size: 24px;
+}
+
+
+.main-setting .save-bot .camera-photo{
+    font-size: 21.8px;
+    margin-right: 12px;
+}
+
+@media (max-width : 615px){
+    .top-topp{
+        flex-direction: column;
+    }
+    .main-setting .photo-sett {
+        margin-right: 0;
+    }
+}
+
+[dir="rtl"] .main-setting .photo-sett label {
+    gap: 10px;
+}
+
+[dir="rtl"] .calendar-icon {
+    right: auto;
+    left: 15px;
+}
+[dir="rtl"] .main-setting .save-bot{
+    margin-right: auto;
+        margin-left: 0;
+}
+[dir="rtl"] .main-setting .photo-sett {
+    margin-left: 40px;
+    margin-right: 0px;
+}

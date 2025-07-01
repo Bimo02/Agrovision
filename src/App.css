@@ -1,0 +1,23 @@
+/* النسخة الأساسية (LTR) */
+/* .content.shifted {
+  margin-left: 250px !important;
+} */
+
+.sidebar-container.open {
+  width: 250px !important;
+}
+
+/* النسخة العربية (RTL) */
+[dir="rtl"] .content.shifted {
+  margin-right: 250px !important; /* تغيير margin-left إلى margin-right */
+}
+
+[dir="rtl"] .sidebar-container.open {
+  width: 0 !important;
+  right: 0 !important; /* إضافة right للتحكم في الموضع */
+  left: auto !important; /* إلغاء left */
+}
+[dir="rtl"] .navBar{
+      right: 235px;
+    left: 0;
+}

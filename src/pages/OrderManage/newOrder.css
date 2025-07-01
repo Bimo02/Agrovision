@@ -1,0 +1,292 @@
+.f-order .f-left h2{
+    font-size: 24px;
+    font-weight: 700;
+    font-family: "Syne", sans-serif;
+    color: rgba(32, 32, 32, 1);
+}
+.f-order .f-left button{
+    font-size: 19px;
+    background: transparent;
+    color: rgba(32, 32, 32, 1);
+    width: auto;
+    display: block;
+}
+.order-details .s-order {
+    margin-top: 30px;
+    padding-left: 20px;
+}
+.order-details .s-order h3{
+    color: rgba(199, 199, 199, 1);
+    font-family: "Open Sans";
+    font-size: 14.5px;
+}
+.s-order form .col-md-3{
+    margin-top: 20px;
+}
+.s-order form .col-md-3 label{
+    font-family: "Open Sans";
+    color: rgba(199, 199, 199, 1);
+    font-weight: 700;
+    font-size: 10.5px;
+    letter-spacing: 0.6px;
+}
+
+.s-order form .col-md-3 .form-control{
+    font-family: "cairo";
+    font-size: 13.5px !important;
+    font-weight: 600;
+}
+.s-order form .col-md-3 .form-control:focus {
+    border-width: 1.32px;
+    border-color: rgba(128, 205, 106, 1);
+    outline: 0;
+    box-shadow: none;
+}
+.Special-inp {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    height: 85px;
+}
+
+.duDate{
+    border-radius: 7px;
+    width: 300px;
+    height: 85px;
+    margin-top: 49px;
+    border: 1.3px solid rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-left: 10px;
+    
+}
+.date-picker::-webkit-calendar-picker-indicator {
+    display: none;
+    -webkit-appearance: none;
+}
+
+.duDate .coll-left .calender-left{
+    color: rgba(128, 205, 106, 1);
+    font-size: 22px;
+}
+.duDate .coll-middle p{
+    font-size: 18px;
+    font-family: 'Cairo';
+    font-weight: 700;
+    color: rgba(32, 32, 32, 1);
+    margin-bottom: 5px;
+}
+.duDate .coll-middle p.formatted-date{
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 0;
+}
+.duDate .coll-middle input{
+    border: none;
+    font-size: 18px !important;
+    font-weight: 600;
+    font-family: 'Cairo';
+    color: rgba(32, 32, 32, 1);
+}
+.duDate .coll-middle input:focus-visible {
+    outline: none;
+}
+.duDate .coll-right{
+    color: rgba(128, 205, 106, 1);
+    font-size: 23px;
+}
+
+.order-header {
+    text-align: left;
+    gap: 135px;
+    display: flex;
+    padding: 10px 0;
+    font-weight: 700;
+    color: rgba(199, 199, 199, 1);
+    width: 817px;
+    font-size: 10.5px;
+    font-family: "Open Sans";
+    letter-spacing: 0.69px;
+  }
+  
+  .order-header-item {
+    margin-bottom: 0px;
+  }
+  
+  .order-input-container {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    width: 817px;
+    margin-left: 10px;
+  }
+  
+  .order-input {
+      flex: 1;
+      padding: 10px;
+    border-width: 0.5px 0 0.5px 0;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.25);
+    font-size: 16px;
+    text-indent: 10px;   
+    line-height: 2; 
+    height: 39px;
+}
+
+input:focus-visible {
+    outline: 0;
+}
+
+  .first-input {
+    border-left: 0.5px solid rgba(0, 0, 0, 0.25);
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+/* إضافة حد أيمن لآخر input */
+.last-input {
+    border-right: 0.5px solid rgba(0, 0, 0, 0.25);
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+  
+    .order-input-container .add-btn {
+        display: flex;
+        width: 39px;
+        height: 40px;
+        background-color: rgba(247, 247, 247, 1);
+        color: rgba(128, 205, 106, 1);
+        border: none;
+        padding: 10px;
+        margin-left: 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 18px;
+        align-items: center;
+  }
+
+  
+  .order-data-item {
+      font-size: 12px;
+      font-family: "cairo";
+      font-weight: 600;
+      color: rgba(32, 32, 32, 1);
+      margin-bottom: 10px;
+    }
+    .order-data-spe {
+        font-weight: 700;
+    }
+  
+  .order-det .order-data .order-data-row {
+    display: flex;
+    justify-content: space-between;
+    width: 713px;
+}
+    .s-order .order-det{
+        margin-top: 40px;
+        display: block;
+    }
+    .s-order .order-det h2{
+        font-size: 21px;
+        font-family: 'Cairo';
+        font-weight: 700;
+        color: rgba(32, 32, 32, 1);
+        margin-bottom: 12px;
+    }
+
+    form.invoice-form{
+        width: 750px;
+        margin-top: 10px;
+        margin-bottom: 125px;
+    }
+    form.invoice-form label{
+        font-size: 14.4px;
+        font-family: "Open Sans";
+        font-weight: 700;
+        color: rgba(199, 199, 199, 1);
+        letter-spacing: 0.9px;
+        
+    }
+    form.invoice-form input{
+        height: 54px;
+        border-color: rgb(245, 245, 245);
+    border-width: 1.8px;
+    border-radius: 12px;
+    color: rgba(32, 32, 32, 1);
+    font-size: 18px !important;
+    font-family: "cairo";
+    font-weight: 600;
+}
+
+form.invoice-form .form-control:focus {
+    border-color: rgba(128, 205, 106, 1);
+    box-shadow: none;
+}
+
+.save-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background-color: rgba(128, 205, 106, 1);
+        color: white;
+        border: none;
+        padding: 9px 25px;
+        font-size: 14px;
+        font-weight: 700;
+        font-family: "cairo";
+        border-radius: 12px;
+        cursor: pointer;
+        margin-left: auto;
+        margin-bottom: 20px;
+  }
+  
+
+  .save-icon {
+    font-size: 21px;
+  }
+  
+
+
+  @media screen and (max-width: 976px) {
+      .s-order form .duDate{
+          margin-left: 0;
+        margin-top: 49px;
+    }
+    .main-order{
+        display: block;
+    }
+    .order-header {
+        width: auto;
+        justify-content: space-between;
+        
+    }
+    .order-input-container{
+        flex-direction: column;
+        width: auto;
+        gap: 20px;
+    }
+    .order-input {
+        border-width: 0.5px;
+        border-radius: 4px;
+    }
+    form.invoice-form{
+        width: auto;
+    }
+    .save-btn {
+        margin-left: 30px;
+    }
+    .order-det .order-data .order-data-row {
+        width: auto;
+        
+    }
+}
+    @media (max-width: 630px) {
+        .order-header {
+            gap: 10px;
+            justify-content: space-between;
+        }
+        .order-details .s-order {
+            padding-left:0;
+        }
+    }

@@ -1,0 +1,16 @@
+/* اتجاه النصوص فقط */
+[lang="ar"] .text-direction {
+    direction: rtl;
+    text-align: right;
+  }
+  
+  [lang="en"] .text-direction {
+    direction: ltr;
+    text-align: left;
+  }
+  
+  /* اجعل الاتجاه العام للصفحة دائمًا ltr */
+  body {
+    direction: ltr;
+  }
+  

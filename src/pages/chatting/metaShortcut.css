@@ -1,0 +1,67 @@
+.meta-shortcut {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 1000;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  .meta-shortcut:hover {
+    transform: scale(1.1);
+  }
+  
+  .meta-icon {
+    width: 60px;
+    height: 60px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .meta-icon img {
+    width: 115%;
+    height: auto;
+  }
+  .meta-shortcut:hover .meta-icon {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+  }
+  
+  .meta-shortcut:active .meta-icon {
+    transform: scale(0.95);
+  }
+  
+  /* تأثير الطفو */
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  .meta-shortcut .meta-icon {
+    animation: float 4s ease-in-out infinite;
+  }
+  
+  /* تلميح عند التحويم */
+  .meta-tooltip {
+    position: absolute;
+    right: 70px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  
+  .meta-shortcut:hover .meta-tooltip {
+    opacity: 1;
+  }

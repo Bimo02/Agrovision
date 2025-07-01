@@ -1,0 +1,195 @@
+.sidebar {
+  font-family: "Syne", sans-serif;
+  width: 200px;
+  background-image:linear-gradient(#68CC58 20%,#34662C 90%);
+  color: #fff;
+  height: 100vh;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-brand {
+    font-size: 28px;
+    margin-bottom: 20px;
+    font-weight: 700;
+    margin-top: 15px;
+    text-align: center;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sidebar-link {
+  color: #fff;
+    text-decoration: none;
+    font-size: 15px;
+}
+
+.link{
+  padding: 5px;
+  display: flex;
+  border-radius: 11px;
+  gap: 7px;
+  align-items: center;
+  cursor: pointer;
+}
+.link:hover{
+  background-color: #fffbfb66;
+}
+.link:target{
+  background-color: #fffbfb66;
+}
+
+/* Sidebar styles */
+.sidebar-container {
+  transition: all 0.3s ease;
+}
+
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 250px; /* عرض السايدبار عند فتحه */
+  background-color: #333;
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+.sidebar-container.closed .sidebar {
+  width: 0; /* عند إغلاق السايدبار */
+  padding: 0; /* إزالة الحشو عند الإغلاق */
+}
+
+.content {
+  transition: margin-left 0.3s ease;
+  margin-left: 250px; 
+}
+
+.content.shifted {
+  margin-left: 0; /* عندما يكون السايدبار مغلقًا */
+}
+
+
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 235px; /* عرض السايدبار عندما يكون مفتوحًا */
+  background-color: #333;
+  color: #fff;
+  padding: 20px;
+  transition: all 0.3s ease;
+  opacity: 1; /* يجعل المحتوى مرئيًا عندما يكون السايدبار مفتوحًا */
+  visibility: visible; /* يجعل السايدبار مرئيًا */
+}
+
+.sidebar-container.closed .sidebar {
+  width: 0; /* تقليص العرض عندما يكون مغلقًا */
+  padding: 0; /* إزالة الحشو عندما يكون مغلقًا */
+  opacity: 0; /* إخفاء المحتوى عند إغلاق السايدبار */
+  visibility: hidden; /* جعل السايدبار غير مرئي */
+  transition: all 0.3s ease;
+}
+
+.sidebar-container.open .sidebar {
+  width: 235px !important; /* إعادة عرضه عندما يكون مفتوحًا */
+  opacity: 1; /* إعادة جعل المحتوى مرئيًا */
+  visibility: visible; /* إظهار السايدبار */
+}
+
+@media (max-width: 1120px) {
+  .sidebar {
+    opacity: 0;
+  }
+}
+
+.sidebar-container.open{
+  width: 235px;
+}
+
+
+
+
+/* General styles */
+.sidebar {
+  font-family: "Syne", sans-serif;
+  width: 250px;
+  background-image: linear-gradient(#68CC58 20%, #34662C 90%);
+  color: #fff;
+  height: 100vh;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-brand {
+  font-size: 28px;
+  margin-bottom: 20px;
+  font-weight: 700;
+  margin-top: 15px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Links */
+.link {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  gap: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.link:hover {
+  background-color: #fffbfb66;
+}
+
+.link.active {
+  background-color: #fffbfb66 !important; /* عند الضغط على الرابط */
+}
+
+.link span {
+  font-size: 15px;
+}
+
+/* Icons */
+.link svg {
+  width: 20px;
+  height: 20px;
+  color: #fff;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+  }
+}
+
+
+
+.link.disabled {
+  pointer-events: none; /* منع النقر */
+  opacity: 0.5; /* تقليل الشفافية */
+  cursor: not-allowed; /* مؤشر غير مسموح */
+}
+
+
+[dir="rtl"] .sidebar {
+  left: auto;
+  right: 0;
+  text-align: right;
+}
+

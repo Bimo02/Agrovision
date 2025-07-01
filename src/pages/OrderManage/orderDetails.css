@@ -1,0 +1,313 @@
+.order-details{
+    background-color: rgba(255, 255, 255, 1);
+    margin: 40px 40px;
+    border-radius: 12px;
+    padding: 20px;
+}
+.f-d {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.f-d .f-left {
+    display: flex;
+    align-items: center;
+}
+.f-d .f-left h2{
+    font-family: cairo;
+    font-size:35px ;
+    font-weight: 700;
+    color: rgba(32, 32, 32, 1);
+    letter-spacing: -1px;
+    margin-bottom: 0;
+    margin-right: 15px;
+    margin-left: 25px;
+}
+.f-d .f-left p{
+    font-family: cairo;
+    color: rgba(165, 165, 165, 1);
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: -7px;
+}
+.f-d .f-left button{
+    display: flex;
+    border: none;
+    width: 27px;
+    height: 27px;
+    background: rgba(165, 165, 165, 1);
+    border-radius: 50%;
+    color: #fff;
+    align-items: center;
+}
+.status-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    font-weight: 700;
+    font-size: 14px;
+    gap: 8px;
+    width: fit-content;
+    height: 43px;
+    border-radius: 12.5px; 
+    margin-bottom: 0;
+}
+.status-label span{
+    font-family: 'Open Sans';
+    font-weight: 700;
+    font-size: 14.5px;
+}
+  
+  .completed {
+    background-color: rgba(216, 255, 224, 1);
+    color: rgba(56, 226, 93, 1);
+  }
+  
+  .invoice-sent {
+    background-color: rgba(223, 237, 242, 1);
+    color: rgba(52, 168, 217, 1);
+  }
+  
+  .pending {
+    background-color: rgba(255, 235, 204, 1);
+    color: rgba(255, 171, 45, 1);
+  }
+  
+  .f-right .download-btn {
+    background-color: rgba(100, 24, 195, 1);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px 6px 14px;
+    gap: 13px;
+    width: fit-content;
+    height: 43px;
+    border-radius: 12.5px;
+    margin-bottom: 0;
+    border: none;
+    font-family: 'Cairo';
+    font-weight: 600;
+    font-size: 16.4px;
+}
+  
+  
+  .f-right{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .print-btn {
+    cursor: pointer;
+    font-size: 25px;
+    color: rgba(100, 24, 195, 1);
+  }
+  .f-right button.dropdown-item{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .f-right button.dropdown-item:active{
+        background:#ededed;
+    }
+  
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+
+  
+    .order-details, .order-details * {
+      visibility: visible;
+    }
+  
+    .order-details {
+      position: absolute;
+      left: -20px;
+      top: 0;
+      width: 100%;
+    }
+  
+    .print-btn, .download-btn {
+      display: none !important;   
+
+  }
+}
+.s-d {
+      padding-top: 35px;
+      /* padding-left: 30px;*/
+      padding-right: 35px; 
+    }
+.s-d p{
+        color: rgba(199, 199, 199, 1);
+        font-family: "Open Sans";
+        font-weight: 400;
+        font-size: 14.5px;
+        letter-spacing: 0.9px;
+    }
+    .s-d .s-left img{
+    width: 110px;
+    border-radius: 27.5px;
+  }
+ .s-d .s-total{
+    display: flex;
+    gap: 35px;
+  }
+
+ .s-right p.c-name {
+    font-size: 25px;
+    font-weight: 700;
+    font-family: cairo;
+    color: rgba(32, 32, 32, 1);
+    letter-spacing: 0px;
+    margin-bottom: 10px;
+
+}
+.s-right p.st{
+    color: rgba(32, 32, 32, 1);
+    font-size: 14px;
+    font-family: "Open Sans";
+    font-weight: 400;
+}
+
+.s-right .s-contact{
+    display: flex;
+    gap: 17px;
+    
+}
+.s-right .s-contact p{
+    color: rgba(32, 32, 32, 1);
+    margin-bottom: 35px;
+}
+.s-d p.title{
+    margin-bottom: 30px;
+}
+
+.s-d .border-green{
+    width: 100%;
+    height: 6.3px;
+    background: linear-gradient(to right, rgba(56, 109, 47, 1) , rgba(104, 204, 88, 1));
+    border-radius: 12.5px;
+}
+
+.s-d .order-det{
+    margin-top: 37px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 37px;
+}
+
+.order-det {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* عمودين متساويين */
+
+  }
+  
+  .order-left {
+    display: flex;
+    justify-content: space-between; /* توزيع ديناميكي بدون gap */
+    align-items: flex-start; /* محاذاة العناصر للأعلى */
+    width: 100%;
+  }
+  
+  .sub-left, .sub-right {
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* يخلي كل جزء ياخد مساحة متساوية */
+  }
+  
+  .order-left  p.name {
+      color: rgba(199, 199, 199, 1);
+      font-family: "Open Sans";
+      font-size: 14.5px;
+      font-weight: 600;
+      letter-spacing: 0.9px;
+      margin-bottom: 10px;
+    }
+    
+    .des {
+        font-size: 14px;
+        color: #333;
+    }
+    
+    .order-left:last-child {
+        align-items: flex-end; 
+        text-align: right; 
+    }
+    .order-left:last-child .sub-left {
+        margin-left: auto; 
+    }
+    
+    .order-left  p.des {
+        color: rgba(32, 32, 32, 1);
+        margin-bottom: 10px;
+        font-family: cairo;
+        letter-spacing: 0;
+        font-weight: 600;
+    }
+
+.order-left p.G-name p{
+    font-weight: 700;
+}
+.s-d .date p.product-date{
+    color: rgba(100, 24, 195, 1);
+    font-size: 16px;
+    font-family: 'Cairo';
+    font-weight: 600;
+    letter-spacing: 0;
+}
+
+.s-d .dott{
+    border-bottom: 0.91px dotted rgba(194, 194, 194, 1);
+}
+
+.calc-amount {
+    width: 50%;
+    margin-left: auto;
+    margin-top: 35px;
+}
+
+.row2 {
+    display: flex;
+    justify-content: space-between; /* يخلي الاسم ع الشمال والرقم ع اليمين */
+    align-items: center;
+    padding: 0 0 5px 0;
+    
+}
+
+.label {
+    flex: 1; /* يخلي النصوص تاخد نفس المساحة */
+    text-align: left; /* يثبت النصوص ع الشمال */
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.value {
+    text-align: right; /* يثبت الأرقام ع اليمين */
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.total {
+    font-weight: bold; /* تخلي TOTAL أوضح */
+    font-size: 18px;
+}
+
+.row2 p.up-txt {
+    margin-bottom: 0;
+    font-weight: 700;
+}
+.row2 p.down-txt {
+    font-family: cairo;
+    color: rgba(32, 32, 32, 1);
+    letter-spacing: 0;
+    font-weight: 400;
+    margin-bottom: 3px;
+
+}
+
+.total p.down-txt {
+    font-weight: 700;
+    font-size: 21.8px;
+}

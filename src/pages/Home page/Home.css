@@ -1,0 +1,112 @@
+body{
+    background-color: #F0F0F0 !important;
+    font-family: "Syne", sans-serif !important;
+  }
+  .app {
+    display: flex;
+  }
+  
+  .main-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .box{
+    display: flex;
+  }
+  /* App.css */
+  .app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  .navbar {
+    /* Navbar أعلى الصفحة */
+    width: 100%;
+  }
+  
+  .main-content {
+    display: flex;
+    flex: 1;
+  }
+  
+  /* Sidebar */
+  .sidebar-container {
+    width: 250px;
+    transition: all 0.3s ease;
+  }
+  
+  .sidebar-container.closed {
+    width: 0;
+    overflow: hidden;
+  }
+  
+  /* RightSidebar على اليمين */
+  .right-sidebar-container {
+    width: 300px;
+    flex-shrink: 0;
+    background-color: #f8f9fa;
+    padding: 1rem;
+  }
+  
+  /* محتوى التطبيق الأساسي */
+  .content {
+    flex: 1;
+    padding: 20px 0;
+    overflow: auto; /* لمنع الـ scroll */
+    margin-top: 50px;
+  }
+  
+  body{
+    margin: 0;
+    background-color: #F0F0F0 ;
+    font-family: "Syne", sans-serif;
+  }
+  .app {
+      display: flex;
+    }
+    
+    .main-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .box{
+      display: flex;
+    }
+  /* عند فتح الشريط الجانبي */
+  .sidebar-container.open {
+    width: 235px;
+    transition: width 0.3s ease;
+  }
+  
+  /* عند إغلاق الشريط الجانبي */
+  .sidebar-container.closed {
+    width: 0;
+    transition: width 0.3s ease;
+  }
+  
+  /* تعديل موقع المحتوى بناءً على حالة الشريط الجانبي */
+  .content.shifted {
+    transition: margin-left 0.3s ease;
+  }
+  
+  .content {
+    transition: margin-left 0.3s ease;
+    margin-left: 0 !important;
+    display: flex;
+  }
+  
+
+  @media (max-width: 992px) {
+    .content{
+      flex-direction: column;
+    }
+  }
+
+
+
+  
